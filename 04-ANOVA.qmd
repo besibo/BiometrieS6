@@ -1,0 +1,3 @@
+# Analyse de variance {#sec-anova}
+
+En cours...

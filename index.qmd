@@ -1,9 +1,158 @@
-# Preface {.unnumbered}
+# Introduction {-}
 
-This is a Quarto book.
 
-To learn more about Quarto books visit <https://quarto.org/docs/books>.
+```{r setup, include=FALSE, cache=FALSE, results=FALSE, message=FALSE}
+options(replace.assign = TRUE, width = 80)
+options(repos = "http://cran.r-project.org/")
 
-```{r}
-1 + 1
+list.of.packages <- c("readxl", "nycflights13", "gapminder", "knitr", "tidyverse", "gridExtra", "devtools", "extrafont", "kableExtra", "skimr", "bindrcpp", "car", "DescTools", "bookdown", "datasauRus", "patchwork", "fontawesome", "palmerpenguins", "ggmosaic", "confintr", "mixdist")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+library(remotes)
+library(knitr)
+library(tidyverse)
+
+# if( !("EDAWR" %in% installed.packages()[,"Package"]) ) {
+#   install_github("rstudio/EDAWR")
+# }
+
+opts_chunk$set(fig.path = 'figure/', cache.path = 'cache/', tidy = FALSE,
+               fig.align = 'center', out.width = '90%', fig.asp = 0.618,
+               fig.show = 'hold', fig.pos = 'htpb', par = TRUE, comment = NA, 
+               cache = TRUE)
 ```
+
+```{r package_bibliography, include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown', 
+                   'quarto', 'tidyverse', 'ggplot2', 'gridExtra', 'skimr', 
+                   'bindrcpp', 'tidyr', 'dplyr', 'readr', "car", "readxl",
+                   "broom", "DescTools", "patchwork", "fontawesome", 
+                   "palmerpenguins", "confintr", "ggmosaic", "mixdist", "nycflights13"), 'packages.bib')
+
+system("cat book.bib packages.bib > all.bib")
+```
+
+
+
+
+## Objectifs {-}
+
+Ce livre contient l'ensemble du matériel (contenus, exemples, exercices...) nécessaire à la réalisation des travaux pratiques sous `R` pour la **Biométrie** de l'EC '*Outils pour l'étude et la compréhension du vivant 3*' du semestre 6 de la licence Sciences de la Vie de La Rochelle Université.
+
+<!-- À l'issue des 3 séances prévues ce semestre (2 TP et 1 TEA), vous devriez être capables de faire les choses suivantes dans le logiciel `RStudio` : -->
+
+<!-- - Explorer des jeux de données en produisant des résumés statistiques de variables de différentes natures (numériques continues ou catégorielles) et en produisant des graphiques appropriés. -->
+<!-- - Être capables de distinguer les notions de dispersion et d'incertitude. -->
+<!-- - Calculer des statistiques descriptives permettant de déterminer la position (moyennes, médianes, quartiles...) et la dispersion des données (écart-types, variances, intervalles inter-quartiles...) pour plusieurs sous-groupes de vos jeux de données, et les représenter sur des graphiques adaptés. -->
+<!-- - Calculer des indices d'incertitude (erreurs standard, intervalles de confiance...) pour plusieurs sous-groupes de vos jeux de données, et les représenter sur des graphiques adaptés. -->
+
+
+<!-- ## Pré-requis {#sec-prerequis} -->
+
+<!-- Pour atteindre les objectifs fixés ici, et compte tenu du volume horaire restreint qui est consacré aux TP et TEA de Biométrie au S4, vous devez obligatoirement posséder un certain nombre de pré-requis. En particulier, vous devriez avoir à ce stade une bonne connaissance de l'interface des logiciels `R` et `RStudio`, et vous devriez être capables : -->
+
+<!-- 1. de créer un `Rproject` et un script d'analyse dans `RStudio` -->
+<!-- 2. d'importer des jeux de données issus de tableurs dans `RStudio` -->
+<!-- 3. d'effectuer des manipulations de données simples (sélectionner des variables, trier des colonnes, filtrer des lignes, créer de nouvelles variables, etc.) -->
+<!-- 4. de produire des graphiques de qualité, adaptés à la fois aux variables dont vous disposez et aux questions auxquelles vous souhaitez répondre. -->
+
+<!-- :::{.callout-warning} -->
+<!-- ## Si ces pré-requis ne sont pas maîtrisés -->
+
+<!-- Mettez-vous à niveau de toute urgence en lisant attentivement [le livre en ligne de Biométrie du semestre 3](https://besibo.github.io/BiometrieS3/)  -->
+<!-- ::: -->
+
+
+<!-- ## Organisation {-} -->
+
+
+<!-- ### Volume de travail {-} -->
+
+<!-- Les travaux pratiques et TEA de biométrie auront lieu entre le 14 mars et le 13 avril 2023 : -->
+
+<!-- - Entre le mardi 14 et le mardi 28 mars : 1 séance de TP d'1h30 et 1 séance de TEA d'1h30 -->
+<!-- - Entre le mardi 11 et le jeudi 13 avril : 1 séance de TP d'1h30 -->
+
+
+<!-- Il manque une séance de TP et de TEA par rapport à la maquette -->
+<!-- **Tous les TP ont lieu en salle MSI 217. Tous les TEA sont à distance.** -->
+
+<!-- Au total, chaque groupe aura donc 2 séances de TP et 1 séance de TEA, soit un total de 4,5 heures prévues dans vos emplois du temps. C'est peu pour atteindre les objectifs fixés et il y aura donc évidemment du travail personnel à fournir en dehors de ces séances. J'estime que vous devrez fournir 3 à 6 heures de travail personnel en plus des séances prévues dans votre emploi du temps. Attention donc : pensez bien à prévoir du temps dans vos plannings car le travail personnel est essentiel pour progresser dans cette matière. J'insiste sur l'importance de faire l'effort dès maintenant : vous allez en effet avoir des enseignements qui reposent sur l'utilisation de ces logiciels jusqu'à la fin du S6 (y compris pendant vos stages et, très vraisemblablement, dans vos futurs masters également). C'est donc maintenant qu'il faut acquérir des automatismes, cela vous fera gagner énormément de temps ensuite. -->
+
+
+<!-- ### Modalités d'enseignement {-} -->
+
+<!-- Pour suivre cet enseignement vous pourrez utiliser les ordinateurs de l'université, mais je ne peux que vous encourager à utiliser vos propres ordinateurs, sous Windows, Linux ou MacOS. Lors de vos futurs stages et pour rédiger vos comptes-rendus de TP, vous utiliserez le plus souvent vos propres ordinateurs, autant prendre dès maintenant de bonnes habitudes en installant les logiciels dont vous aurez besoin tout au long de votre licence. Si vous n'avez pas suivi la biométrie du semestre 3 et que les logiciels `R` et `RStudio` ne sont pas encore installés sur vos ordinateurs, suivez [la procédure décrite ici](https://besibo.github.io/BiometrieS3/01-R-basics.html#sec-install). Si vous ne possédez pas d'ordinateur, manifestez vous rapidement auprès de moi car des solutions existent (prêt par l'université, travail sur tablette via [RStudio cloud](https://rstudio.cloud)...). -->
+
+<!-- :::{.callout-important} -->
+<!-- L'essentiel du contenu de cet enseignement peut être abordé en autonomie, à distance, grâce à ce livre en ligne, aux ressources mises à disposition sur Moodle et à votre ordinateur personnel. Cela signifie que **la présence physique lors des séances de TP n'est pas obligatoire**.  -->
+<!-- ::: -->
+
+<!-- Plus que des séances de TP classiques, considérez plutôt qu'il s'agit de **permanences non-obligatoires** : si vous pensez avoir besoin d'aide, si vous avez des points de blocage ou des questions sur le contenu de ce document ou sur les exercices demandés, alors venez poser vos questions lors des séances de TP. Vous ne serez d'ailleurs pas tenus de rester pendant 1h30 : si vous obtenez une réponse en 10 minutes et que vous préférez travailler ailleurs, vous serez libres de repartir !  -->
+
+<!-- De même, si vous n'avez pas de difficulté de compréhension, que vous n'avez pas de problème avec les exercices de ce livre en ligne, votre présence n'est pas requise : tant que le travail demandé est fait, libre à vous de choisir votre façon de travailler. Bien entendu, si vous souhaitez venir en salle de TP pour travailler au calme et dans un cadre plus formel, même si vous n'avez pas de questions à poser : aucun problème, vous y serez toujours les bienvenus et je serai présent systématiquement, pour toutes les séances et tous les groupes. -->
+
+<!-- Ce fonctionnement très souple a de nombreux avantages : -->
+
+<!-- - vous vous organisez comme vous le souhaitez -->
+<!-- - vous ne venez que lorsque vous en avez vraiment besoin -->
+<!-- - celles et ceux qui se déplacent reçoivent une aide personnalisée -->
+<!-- - vous travaillez sur vos ordinateurs -->
+<!-- - les effectifs étant réduits, c'est aussi plus confortable pour moi ! -->
+
+<!-- Toutefois, pour que cette organisation fonctionne, cela demande de la rigueur de votre part, en particulier sur la régularité du travail que vous devez fournir. Si la présence en salle de TP n'est pas requise, **le travail demandé est bel et bien obligatoire** ! Si vous venez en salle de TP sans avoir travaillé en amont, vous risquez de perdre votre temps car vous passerez votre séance à lire et suivre ce livre en ligne, choses que vous pouvez très bien faire chez vous. De même, si vous attendez le 13 avril pour vous y mettre, je ne pourrais pas grand chose pour vous. Je le répète, outre les heures de TP/TEA prévus dans vos emplois du temps, vous devez prévoir au moins 3 à 6 heures de travail personnel supplémentaire. -->
+
+<!-- Je vous laisse donc une grande liberté d'organisation. À vous d'en tirer le maximum et de faire preuve du sérieux nécessaire.  -->
+
+<!-- ### Utilisation de Slack {-} -->
+
+<!-- Outre les séances de permanence non-obligatoires, nous échangerons aussi sur [l'application Slack](https://slack.com/intl/fr-fr/), qui fonctionne un peu comme un "twitter privé". Slack facilite la communication des équipes et permet de travailler ensemble. Créez-vous un compte en ligne et installez le logiciel sur votre ordinateur (il existe aussi des versions pour tablettes et smartphones). Lorsque vous aurez installé le logiciel, [cliquez sur ce lien](https://join.slack.com/t/l3sv22-23ecoutil/shared_invite/zt-1hmldkjae-Y9VADlxH~iM5u3PPMUF9_A) pour vous connecter à notre espace de travail commun intitulé `L3 SV 22-23 / EC outils` (ce lien expire régulièrement : faites moi signe s'il n'est plus valide).  -->
+
+<!-- Vous verrez que 3 "chaînes" sont disponibles : -->
+
+<!-- - \#général : c'est là que les questions liées à l'organisation générale du cours, des TP et TEA, des évaluations, etc. doivent être posées. Si vous ne savez pas si une séance de permanence a lieu, posez la question ici. -->
+<!-- - \#questions-rstudio : c'est ici que toutes les questions pratiques liées à l'utilisation de `R` et `RStudio` devront êtres posées. Problèmes de syntaxe, problèmes liés à l'interface, à l'installation des packages ou à l'utilisation des fonctions, à la création des graphiques, à la manipulation des tableaux... Tout ce qui concerne directement les logiciels sera traité ici. Vous êtes libres de poser des questions, de poster des captures d'écran, des morceaux de code, des messages d'erreur. Et **vous êtes bien entendus vivement encouragés à vous entraider et à répondre aux questions de vos collègues.** Je n'interviendrai ici que pour répondre aux questions laissées sans réponse ou si les réponses apportées sont inexactes. Le fonctionnement est celui d'un forum de discussion instantané. Vous en tirerez le plus grand bénéfice en participant et en n'ayant pas peur de poser des questions, même si elles vous paraissent idiotes. Rappelez-vous toujours que si vous vous posez une question, d'autres se la posent aussi probablement. -->
+<!-- - \#questions-stats : C'est ici que vous pourrez poser vos questions liées aux méthodes statistiques ou aux choix des modèles de dynamique des populations. Tout ce qui ne concerne pas directement l'utilisation du logiciel (comme par exemple le choix d'un test ou des hypothèses nulles et alternatives, la démarche d'analyse, la signification de tel paramètre ou estimateur, le principe de telle ou telle méthode...) peut être discuté ici. Comme pour le canal \#questions-rstudio, **vous êtes encouragés à vous entraider et à répondre aux questions de vos collègues**. -->
+
+<!-- Ainsi, quand vous travaillerez à vos TP ou TEA, que vous soyez installés chez vous ou en salle de TP, prenez l'habitude de garder Slack ouvert sur votre ordinateur. Même si vous n'avez pas de question à poser, votre participation active pour répondre à vos collègues est souhaitable et souhaitée. Je vous incite donc fortement à vous **entraider** : c'est très formateur pour celui qui explique, et celui qui rencontre une difficulté a plus de chances de comprendre si c'est quelqu'un d'autre qui lui explique plutôt que la personne qui a rédigé les instructions mal comprises. -->
+
+<!-- Ce document est fait pour vous permettre d'avancer en autonomie et vous ne devriez normalement pas avoir beaucoup besoin de moi si votre lecture est attentive. L'expérience montre en effet que la plupart du temps, il suffit de lire correctement les paragraphes précédents et/ou suivants pour obtenir la réponse à ses questions. J'essaie néanmoins de rester disponible sur Slack pendant les séances de TP et de TEA de tous les groupes. Cela veut donc dire que même si votre groupe n'est pas en TP, vos questions ont des chances d'être lues et de recevoir des réponses dès que d'autres groupes sont en TP ou TEA. Vous êtes d'ailleurs encouragés à échanger sur Slack aussi pendant vos phases de travail personnel. -->
+
+
+<!-- ## Progession conseillée {-} -->
+
+<!-- Si vous avez suivi le document de prise en main de `R` et `RStudio` du semestre 3, vous savez que pour apprendre à utiliser ces logiciels, il faut faire les choses soi-même, ne pas avoir peur des messages d'erreurs (il faut d'ailleurs apprendre à les déchiffrer pour comprendre d'où viennent les problèmes), essayer maintes fois, se tromper beaucoup, recommencer, et surtout, ne pas se décourager. J'utilise ce logiciel presque quotidiennement depuis plus de 15 ans et à chaque session de travail, je rencontre des messages d'erreur. Avec suffisamment d'habitude, on apprend à les déchiffrer, et on corrige les problèmes en quelques secondes. Ce livre est conçu pour vous faciliter la tâche, mais ne vous y trompez pas, vous rencontrerez des difficultés, et c'est normal. C'est le prix à payer pour profiter de la puissance du meilleur logiciel permettant d'analyser des données, de produire des graphiques de qualité et de réaliser toutes les statistiques dont vous aurez besoin d'ici la fin de vos études et au-delà. -->
+
+<!-- Pour que cet apprentissage soit le moins problématique possible, il convient de prendre les choses dans l'ordre. C'est la raison pour laquelle les 3 chapitres de ce livre doivent être lus dans l'ordre, et les exercices d'application faits au fur et à mesure de la lecture. -->
+
+<!-- Idéalement, voilà les étapes que vous devriez avoir franchi chaque semaine : -->
+
+<!-- 1. À l'issue de la première séance de TP et de la première séance de TEA, vous devriez avoir compris comment calculer et interpréter des résumés statistiques de vos jeux de données (c'est le premier chapitre de ce livre en ligne). Vous devriez en particulier être capable de calculer des estimateurs de position (moyennes, médianes, quartiles...) et de dispersion (variances, écart-types, intervalles inter-quartiles...) sur des variables numériques, et ce, pour plusieurs modalités d'une variable catégorielle ou pour chaque combinaison de modalités de plusieurs variables catégorielles (par exemple, quelles sont les moyennes et variances des longueurs de becs pour chaque espèce de manchots et chaque sexe). Vous devrez donc être capables d'utiliser les fonctions `group_by()` et `summarise()` du package `dplyr`. Cela suppose bien sûr que vous soyez au clair sur les pré-requis évoqués plus haut (@sec-prerequis) avant d'aborder le premier chapitre de ce livre en ligne. -->
+
+<!-- 2. À l'issue de la seconde séance de TP, Vous devrez être capables de distinguer la notion de dispersion de celle de précision. Vous devrez être capable d'expliquer clairement la différence entre ces 2 notions, et vous devrez savoir à quoi servent les indices de dispersion et d'incertitude. Vous devrez être capables de calculer des indices d'incertitude, en particulier l'erreur standard de la moyenne (ou erreur type) et l'intervalle de confiance de la moyenne (chapitre 2). Vous devrez en outre être capables de produire des graphiques sur lesquels apparaissent des barres d'incertitude (erreurs standards ou intervalles de confiance, chapitre 3). Là encore, cela suppose que vous soyez au clair avec les représentations graphiques abordées au semestre 3 (comment produire un graphique avec `ggplot2`, quel graphique choisir pour quelles données et quel objectif ?...) -->
+
+
+<!-- ## Évaluation(s) {-} -->
+
+<!-- L'évaluation de la partie "Biométrie" de l'EC "Outils pour l'étude et la compréhension du vivant 3" sera conduite par mes collègues en charge des cours magistraux, travaux dirigés, et travaux pratiques "classiques" (Benoît Lebreton et Gérard Blanchard). Il est bien évident toutefois que mes collègues attendent une bonne maîtrise des notions développées ici, et qu'au-delà de la biométrie, les autres collègues intervenant dans l'EC "outils pour l'étude et la compréhension du vivant 3" attendent eux aussi que vous mettiez en pratique ce que vous apprenez ici dans vos futurs compte-rendus de TP. -->
+
+## Licence
+
+Ce livre est ligne est sous licence Creative Commons ([CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr))
+
+[![](images/cc_licence.png){fig-align="center"}](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr)
+
+Vous êtes autorisé à partager, copier, distribuer et communiquer ce matériel par tous moyens et sous tous formats, tant que les conditions suivantes sont respectées :
+
+<ul class="fa-ul">
+<li><span class="fa-li">{{< fa brands creative-commons-by size=xl >}}</span> **Attribution** : vous devez créditer ce travail (donc citer son auteur), fournir un lien vers ce livre en ligne, intégrer un lien vers la licence Creative Commons et indiquer si des modifications du contenu original ont été effectuées. Vous devez indiquer ces informations par tous les moyens raisonnables, sans toutefois suggérer que l'auteur vous soutient ou soutient la façon dont vous avez utilisé son travail. 
+</li>
+<li><span class="fa-li">{{< fa brands creative-commons-nc-eu size=xl >}}</span> **Pas d’Utilisation Commerciale** : vous n'êtes pas autorisé à faire un usage commercial de cet ouvrage, ni de tout ou partie du matériel le composant. Cela comprend évidemment la diffusion sur des plateformes de partage telles que studocu.com qui tirent profit d'œuvres dont elles ne sont pas propriétaires, souvent à l'insu des auteurs.
+</li>
+<li><span class="fa-li">{{< fa brands creative-commons-nd size=xl >}}</span> **Pas de modifications** : dans le cas où vous effectuez un remix, que vous transformez, ou créez à partir du matériel composant l'ouvrage original, vous n'êtes pas autorisé à distribuer ou mettre à disposition l'ouvrage modifié.
+</li>
+<li><span class="fa-li">{{< fa unlock-alt size=xl >}}</span> **Pas de restrictions complémentaires** : vous n'êtes pas autorisé à appliquer des conditions légales ou des mesures techniques qui restreindraient légalement autrui à utiliser cet ouvrage dans les conditions décrites par la licence.
+</li>
+</ul>

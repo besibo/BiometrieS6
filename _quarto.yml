@@ -2,22 +2,51 @@ project:
   type: book
 
 book:
-  title: "BiometrieS6"
-  author: "Jane Doe"
-  date: "22/02/2023"
+  title: "TP de Biométrie<br> Semestre 6<br>"
+  author: "Benoît Simon-Bouhet"
+  date: now
+  date-format: "dddd D MMMM YYYY"
+  search: true
+  downloads: pdf
+  page-navigation: true
+  repo-url: "https://github.com/besibo/BiometrieS6"
   chapters:
     - index.qmd
-    - intro.qmd
-    - summary.qmd
+    - 01-PropTests.qmd
+    - 02-OneSampleTests.qmd
+    - 03-TwoSampleTests.qmd
+    - 04-ANOVA.qmd
+    - 05-Regression.qmd
     - references.qmd
 
-bibliography: references.bib
+bibliography: all.bib
+lang: fr
+title-block-banner: true
+reference-location: margin
+
+language: 
+  title-block-author-single: "Auteur"
+  title-block-published: "Dernière Mise à jour"
 
 format:
   html:
-    theme: cosmo
+    theme: MyUnited.scss
+    highlight-style: solarized
+    # code-tools: 
+    #   source: false
+    #   toggle: true
+    # code-fold: show
+    code-block-bg: true
+    code-block-border-left: "#31BAE9"
+    code-depth: 5
+    smooth-scroll: true
+    link-external-icon: true
+    link-external-newwindow: true
   pdf:
     documentclass: scrreprt
-
-
-
+    papersize: a4
+    highlight-style: github
+    code-block-bg: false
+    code-block-border-left: "#31BAE9"
+    code-depth: 5
+    colorlinks: true
