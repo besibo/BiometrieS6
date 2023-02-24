@@ -1,0 +1,3 @@
+# Comparaison de moyennes : deux échantillons appariés {#sec-moy2}
+
+En cours...
