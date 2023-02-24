@@ -56,15 +56,10 @@ Vous aurez également besoin des jeux de données suivants :
 Enfin, je spécifie ici une fois pour toutes le theme que j'utiliserai pour tous les graphiques de ce livre en ligne :
 
 ```{r}
-#| eval: false
 theme_set(theme_bw())
 ```
 
 
-```{r}
-#| echo: false
-theme_set(theme_bw(base_family = "Roboto Slab", base_size = 13))
-```
 
 
 ## Contexte
