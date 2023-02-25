@@ -1,3 +1,637 @@
 # Comparaison de moyennes : deux échantillons appariés {#sec-moy2}
 
 En cours...
+
+
+<!-- ## Comparaison de la moyenne de 2 populations : données appariées -->
+
+<!-- On s'intéresse ici à la comparaison de 2 séries de données dont les observations sont liées 2 à 2. C'est par exemple le cas lorsque l'on fait subir un traitement à différents sujets et que l'on souhaite comparer les mesures obtenues avant et après le traitement.  -->
+
+<!-- Autrement dit, dans les plans d'expériences appariés, **les deux traitements** ou modalités **sont appliqués à chaque unité d'échantillonnage**. -->
+
+<!-- Voici quelques exemples de situations qui devraient être traitées avec des tests sur données appariées : -->
+
+<!-- - Comparaison de la masse de patients avant et après une hospitalisation. -->
+<!-- - Comparaison de la diversité de peuplements de poissons dans des lacs avant et après contamination par des métaux lourds. -->
+<!-- - Test des effets d'une crème solaire appliquée sur un bras de chaque volontaire alors que l'autre bras ne reçoit qu'un placébo. -->
+<!-- - Test des effets du tabagisme dans un échantillon de fumeurs, dont chaque membre est comparé à un non fumeur choisi pour qu'il lui ressemble le plus possible en terme d'âge, de masse, d'origine éthnique et sociale, etc. -->
+<!-- - Test des effets que les conditions socio-économiques ont sur les préférences alimentaires en comparant des vrais jumaux élevés dans des familles adoptives séparées qui diffèrent en termes de conditions socio-économiques. -->
+
+<!-- Les 2 derniers exemples montrent que même des individus séparés peuvent constituer une  "paire statistique" s'ils partagent un certain nombre de caractéristiques (physiques, environnementales, génétiques, comportementales, etc.) pertinentes pour l'étude. -->
+
+<!-- ### Exploration préalable des données{#Explo2} -->
+
+<!-- Ici, nous allons nous intéresser au lien qui pourrait exister entre la production de testostérone et l'immunité chez une espèce d'oiseau vivant en Amérique du Nord, [le carouge à épaulettes](https://fr.wikipedia.org/wiki/Carouge_à_épaulettes). -->
+
+<!-- Chez de nombreuses espèces, les mâles ont plus de chances d'attirer des femelles s'ils produisent des niveaux de testostérone élevés. Est-ce que la forte production de testostérone de certains mâles a un coût, notamment en terme d'immuno-compétence ? Autrement dit, est-ce que produire beaucoup de testostérone au moment de la reproduction (ce qui fournit un avantage sélectif) se traduit par une immunité plus faible par la suite, et donc une plus forte susceptibilité de contracter des maladies (ce qui constitue donc un désavantage sélectif) ? -->
+
+<!-- Pour étudier cette question, une équipe de chercheurs [@Hasselquist1999] a mis en place le dispositif expérimental suivant. Les niveaux de testostérone de 13 carouges à épaulettes mâles ont été artificiellement augmentés par l'implantation chirurgicale d'un microtube perméable contenant de la testostérone. L'immunocompétence a été mesurée pour chaque oiseau avant et après l'opération chirurgicale. La variable mesurée est la production d'anticorps suite à l'exposition des oiseaux avec un antigène non pathogène mais censé déclencher une réponse immunitaire. Les taux de production d'anticorps sont exprimés en logarithmes de densité optique par minute $\left(\ln\frac{mOD}{min}\right)$. -->
+
+<!-- #### Importation et examen visuel -->
+
+<!-- Les données se trouvent dans  [le fichier `Testosterone.csv`](data/Testosterone.csv). Importez ces données dans un objet nommé `Testo` et examinez le tableau obtenu. -->
+
+<!-- ```{r, echo = FALSE, message=FALSE} -->
+<!-- Testo <- read_csv("data/Testosterone.csv") -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- Testo -->
+<!-- ``` -->
+
+<!-- Visiblement, il n'y a pas de données manquantes mais certaines variables sont inutiles. En réalité, nous aurons besoin des données sous 2 formats disctincts : un format "large" pour les statistiques descriptives et les tests d'hypothèses, et un format "long" pour les représentations graphiques. Et dans tous les cas, l'identifiant individuel devrait être considéré comme un facteur, et non comme une variable numérique comme c'est le cas actuellement. -->
+
+<!-- Commençons par créer un tableau "large" pour les statistiques descriptives : -->
+
+<!-- ```{r} -->
+<!-- Testo_large <- Testo %>%  -->
+<!--   mutate(blackbird = factor(blackbird)) %>% -->
+<!--   select(ID = blackbird, -->
+<!--          Before = logBeforeImplant, -->
+<!--          After = logAfterImplant) -->
+
+<!-- Testo_large -->
+<!-- ``` -->
+
+<!-- Il nous faut maintenant transformer ce tableau en format "long" pour les représentations graphiques : -->
+
+<!-- ```{r} -->
+<!-- Testo_long <- Testo_large %>%  -->
+<!--   pivot_longer(cols = c(Before, After), -->
+<!--                names_to = "Traitement",  -->
+<!--                values_to = "DO") %>%  -->
+<!--   mutate(Traitement = factor(Traitement, levels = c("Before", "After"))) -->
+
+<!-- Testo_long -->
+<!-- ``` -->
+
+<!-- Si vous ne comprenez pas ces commandes, je vous conseille vivement de reprendre [les chapitres 5 et 6](https://besibo.github.io/DA/tidyr.html) du livre en ligne de Biométrie 2. Dans l'idéal, depuis les TP de biométrie 2, vous devriez être capables de construire de telles séquences de commandes pour aboutir à un tableau rangé ne contenant que les variables utiles, au format long comme au format court (ou large). Mais évidemment, de tels groupes de commandes se construisent étape par étape, et pas d'un seul coup, contrairement à ce que les commandes précédentes pourraient laisser croire. -->
+
+<!-- Maintenant que nous disposons de ces 2 tableaux, nous pouvons commencer à décrire nos données. -->
+
+
+<!-- #### Statistiques descriptives -->
+
+<!-- Pour décrire simplement les données, nous nous en tiendront ici à l'utilisation des fonctions `summary()` et `skim()`. -->
+
+<!-- Pour la fonction `summary()`, le plus simple est toujours d'utiliser le tableau au format large : -->
+
+<!-- ```{r} -->
+<!-- summary(Testo_large) -->
+<!-- ``` -->
+
+<!-- On constate ici que pour les 2 traitements, les valeurs des différents indices sont très proches entre les 2 séries de données, avec des valeurs de densité optiques (DO) légèrement supérieures après l'opération chirurgicale (sauf pour le premier quartile). -->
+
+<!-- Pour la fonction `skim()` le plus simple est là aussi d'utiliser le tableau large : -->
+
+<!-- ```{r,  render = knitr::normal_print, size = 'small'} -->
+<!-- skim(Testo_large) -->
+<!-- ``` -->
+
+<!-- On arrive toutefois aux mêmes résultats avec le tableau long, à condition de grouper les données par traitement (variable `Traitement`) avec `group_by()` : -->
+
+<!-- ```{r, render = knitr::normal_print, size = 'small'} -->
+<!-- Testo_long %>%  -->
+<!--   group_by(Traitement) %>%  -->
+<!--   skim() -->
+<!-- ``` -->
+
+
+<!-- #### Exploration graphique -->
+
+<!-- Ici, c'est le tableau rangé au format long qui sera le plus adapté. Lorsque nous avions une unique série de données, nous avons utilisé 3 types de représentations graphiques pour visualiser les données. Nous allons là aussi réaliser ces 3 graphiques. Toutefois, puisque nous avons maintenant plusieurs séries de données, le format des graphiques sera légèrement différent. -->
+
+<!-- 1. Données brutes sous forme de nuage de points (ou de stripchart) : -->
+
+<!-- ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2} -->
+<!-- Testo_long %>%  -->
+<!--   ggplot(aes(x = Traitement, y = DO)) + -->
+<!--   geom_point() -->
+<!-- ``` -->
+
+<!-- Comme toujours, on peut réaliser un stripchart pour limiter les problèmes d'over-plotting : -->
+
+<!-- ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2} -->
+<!-- Testo_long %>%  -->
+<!--   ggplot(aes(x = Traitement, y = DO)) + -->
+<!--   geom_jitter(height = 0, width = 0.25) -->
+<!-- ``` -->
+
+<!-- 2. Histogrammes -->
+
+<!-- Nous allons faire un histogramme pour chaque série de données en utilisant des facettes : -->
+<!-- ```{r} -->
+<!-- Testo_long %>%  -->
+<!--   ggplot(aes(x = DO)) + -->
+<!--   geom_histogram(bins = 10, color = grey(0.8))+ -->
+<!--   facet_wrap(~Traitement, ncol = 1) -->
+<!-- ``` -->
+
+<!-- 3. Boxplots -->
+
+<!-- ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2} -->
+<!-- Testo_long %>%  -->
+<!--   ggplot(aes(x = Traitement, y = DO)) + -->
+<!--   geom_boxplot(notch = TRUE) -->
+<!-- ``` -->
+
+<!-- Ici, l'intervalle de confiance à 95% de la médiane pour la série "After" est tellement large que son extrémité supérieure dépasse la valeur du troisième quartile, la valeur maximale observée, et la limite supérieure de l'axe des ordonnées. Il vaut donc mieux ne pas faire figurer les encoches pour avoir un graphique plus présentable : -->
+
+<!-- ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2} -->
+<!-- Testo_long %>%  -->
+<!--   ggplot(aes(x = Traitement, y = DO)) + -->
+<!--   geom_boxplot() -->
+<!-- ``` -->
+
+<!-- À première vue, ces 3 représentations graphiques semblent montrer que la seconde série de données (après l'opération chirurgicale) présente des valeurs légèrement plus élevées que la première (avant l'opération). Toutefois, il semble que la dispersion des données soit aussi plus importante après l'opération qu'avant, sauf pour un individu outlier qui présente une immuno-compétence très faible avant l'opération. -->
+
+<!-- Toutes ces représentations graphiques sont certes utiles, mais elles masquent un élément crucial : ce sont les mêmes individus qui sont étudiés avant et après l'opération. Il s'agit de données appariées ! Pour avoir une bonne vision de ce qui se passe, il nous faut faire apparaître ce lien entre les 2 séries de données : -->
+
+<!-- ```{r, fig.asp = 1.5, out.width = '33%', fig.width = 3} -->
+<!-- Testo_long %>%  -->
+<!--   ggplot(aes(x = Traitement, y = DO, group = ID, color = ID)) + -->
+<!--   geom_line() + -->
+<!--   geom_point(alpha = 0.7) -->
+<!-- ``` -->
+
+<!-- Ce graphique nous donne une image très différente de la réalité des données. On constate ici que l'immuno-compétence de certains individus augmente, alors que pour d'autres, elle diminue.  -->
+
+<!-- Une façon d'estimer si les changements d'immuno-compétence sont majoritairement orientés dans un sens ou non est de calculer l'intervalle de confiance à 95% de la différence d'immuno-compétence entre avant et après l'opération. -->
+
+<!-- ### Le test paramétrique -->
+
+<!-- Le test paramétrique permettant de comparer la moyenne sur des séries appariées est là encore un test de Student : le **test de Student sur données appariées** (étonnant non ?...). En réalité, ce test de Student n'est pas un test de comparaison de moyennes à proprement parler. La procédure est en fait la suivante : -->
+
+<!-- 1. Pour chaque individu, calculer la différence d'immuno-compétence entre les deux temps de l'expérience (DO après - DO avant) -->
+<!-- 2. Puisque nous avons 13 individus, nous aurons 13 valeurs de différences. La moyenne de cette différence sera comparée à la valeur théorique 0. Autrement dit, si les 2 séries ont même moyenne, la moyenne des différences doit être nulle. Sinon, la moyenne des différences doit être différente de zéro. -->
+
+<!-- #### Conditions d'application -->
+
+<!-- Les conditions d'application de ce test paramétrique sont presque les mêmes que pour le test de Student à un échantillon : -->
+
+<!-- 1. Les individus sur lesquels portent la comparaison doivent être issus d'un échantillonnage aléatoire. Comme toujours, en l'absence d'indication contraire, on considère que cette condition est vérifiée. -->
+<!-- 2. Les différences par paires entre les 2 modalités du traitement doivent suivre une distribution Normale. Ce n'est donc pas les données brutes de chaque série qui doivent suivre une loi Normale, mais bien la différence "après" - "avant" calculée pour chaque individu. Commençons donc par calculer ces différences : -->
+
+<!-- ```{r} -->
+<!-- Testo_large <- Testo_large %>%  -->
+<!--   mutate(Diff = After - Before) -->
+
+<!-- Testo_large -->
+<!-- ``` -->
+
+<!-- Il nous faut donc tester la normalité de la nouvelle variable `Diff`. Commençons par en faire un graphique : -->
+
+<!-- ```{r} -->
+<!-- Testo_large %>%  -->
+<!--   ggplot(aes(x = Diff)) + -->
+<!--   geom_histogram(bins = 10, color = grey(0.8)) -->
+<!-- ``` -->
+
+<!-- Compte tenu du faible nombre d'individus, la forme de l'histogramme n'est pas si éloignée que ça d'une courbe en cloche (notez que ce n'était pas du tout le cas pour les données brutes de chaque série de départ qui ont toutes les deux des distributions non Normales). On le vérifie avec un test de normalité de Shapiro-Wilk : -->
+
+<!-- - H$_0$ : la différence d'immuno-compétence des individus suit une distribution Normale. -->
+<!-- - H$_1$ : la différence d'immuno-compétence des individus ne suit pas une distribution Normale. -->
+
+<!-- ```{r} -->
+<!-- Testo_large %>%  -->
+<!--   pull(Diff) %>%  -->
+<!--   shapiro.test() -->
+<!-- ``` -->
+
+<!-- > Au seuil $\alpha = 0.05$, on ne peut pas rejeter l'hypothèse nulle de normalité pour la différence d'immuno-compétence entre après et avant l'intervention chirurgicale (test de Shapiro-Wilk, $W = 0.98$, $p = 0.977$). -->
+
+<!-- Les conditions d'application du test paramétrique sont donc réunies. -->
+
+
+<!-- #### Réalisation du test et interprétation -->
+
+<!-- Le test de Student sur données appariées peut se faire de 3 façons distinctes. Les 3 méthodes fournissent exactement les mêmes résultats. Quelle que soit la méthode utilisée, les hypothèses nulles et alternatives sont toujours les mêmes : -->
+
+<!-- - H$_0$ : le changement moyen de production d'anticorps après la pose chirurgicale de l'implant de testostérone est nul ($\mu_{Diff} = 0$). -->
+<!-- - H$_1$ : le changement moyen de production d'anticorps après la pose chirurgicale de l'implant de testostérone n'est pas nul ($\mu_{Diff} \neq 0$). -->
+
+<!-- ```{r} -->
+<!-- # Méthode nº1 : avec une formule et le tableau au format long -->
+<!-- t.test(DO ~ Traitement, data = Testo_long, paired = TRUE) -->
+<!-- ``` -->
+
+<!-- Plusieurs remarques concernant cette première syntaxe : -->
+
+<!-- 1. On utilise le symbole "`~`" pour indiquer une formule. On cherche à regarder l'effet du `Traitement` sur la `DO` qui traduit l'immuno-compétence. Le "`~`" se lit : "en fonction de". -->
+<!-- 2. Avec la syntaxe utilisant les formules, on doit spécifier l'argument `data = Testo_long` pour indiquer à RStudio que les variables `DO` et `Traitement` sont des colonnes de ce tableau. -->
+<!-- 3. Enfin, il est important d'indiquer `paired = TRUE` puisque nous réalisons un test de Student sur données appariées. Si on ne mets pas cet argument, on réalise un test de Student sur échantillons indépendants. -->
+
+<!-- Ici, voilà la conclusion de ce test : -->
+
+<!-- > Le test de Student sur données appariées ne permet pas de montrer de changement d'immuno-compétence suite à l'intégration de l'implant chirurgical de testostérone. On ne peut pas rejeter l'hypothèse nulle au seuil $\alpha = 0.05$ ($t = -1.27$, $ddl = 12$, $p = 0.223$). La moyenne des différences de densités optiques observées entre avant et après l'intervention chirurgicale vaut -0.056 (intervalle de confiance à 95% de cette différence : [-0.152 ; 0.040]) -->
+
+<!-- Donc visiblement, une forte production de testostérone n'est pas significativement associée à une baisse de l'immuno-compétence. -->
+
+
+
+<!-- ```{r} -->
+<!-- # Méthode nº2 : avec les 2 séries de données et le tableau au format large -->
+<!-- t.test(Testo_large$Before, Testo_large$After, paired = TRUE) -->
+<!-- ``` -->
+
+<!-- Cette deuxième syntaxe est différente de la première puisque nous n'utilisons plus le format `formule`. Ici, on indique le nom des 2 colonnes du tableau `Testo_large` qui contiennent les 2 séries de données. Puisque nous n'utilisons plus de formule, l'argument "`data = ...`" n'existe plus. C'est pourquoi il nous faut taper spécifiquement "`Testo_large$Before`" et "`Testo_large$After`", et non pas simplement le nom des colonnes. En revanche, comme pour le test précédent, il est indispensable d'indiquer "`paired = TRUE`" pour faire un test de Student sur données appariées. -->
+
+<!-- Les résultats fournis et leur interprétation sont identiques à ceux de la syntaxe précédente. -->
+
+<!-- ```{r} -->
+<!-- # Méthode nº3 : avec la variable Diff, mu = 0, et le tableau au format large -->
+<!-- t.test(Testo_large$Diff, mu = 0) -->
+<!-- ``` -->
+
+<!-- Enfin, comme expliqué plus haut, le test de Student sur données appariées est strictement équivalent à un test de Student à un échantillon pour lequel on compare la moyenne des différences individuelles à 0. Là encore, les résultats produits et leur interprétation sont identiques aux deux tests précédents. La seule différence concerne les signes puisque les deux premiers tests regardaient la différence "Before - After" alors que ce troisième test regarde la différence "After - Before" (que nous avons calculée manuellement). -->
+
+<!-- À vous donc de choisir la syntaxe qui vous paraît la plus parlante ou celle que vous avez le plus de facilité à retenir. -->
+
+
+<!-- ### L'alternative non paramétrique -->
+
+<!-- Comme pour le test de Student à un échantillon, lorsque les conditions d'application du test de Student sur données appariées ne sont pas vérifiées (c'est à dire lorsque la différence entre les données appariées des deux séries ne suit pas une loi Normale), il faut utiliser un test non paramétrique équivalent. -->
+
+<!-- Il s'agit là encore du **test de Wilcoxon des rangs signés** qui s'intéresse aux médianes. Les hypothèses nulles et alternatives sont les suivantes : -->
+
+<!-- - H$_0$ : le changement **médian** de production d'anticorps après la pose chirurgicale de l'implant de testostérone est nul ($med_{Diff} = 0$). -->
+<!-- - H$_1$ : le changement **médian** de production d'anticorps après la pose chirurgicale de l'implant de testostérone n'est pas nul ($med_{Diff} \neq 0$). -->
+
+<!-- Comme pour le test de Student, 3 syntaxes sont possibles et strictement équivalentes. Il est important de ne pas oublier l'argument `paired = TRUE` pour les 2 premières syntaxes afin de s'assurer que l'on réalise bien un test sur données appariées. Enfin, l'argument `conf.int = TRUE` doit être ajouté pour les 3 syntaxes afin que la (pseudo-) médiane et son intervalle de confiance à 95% soient calculés et affichés. -->
+
+<!-- ```{r} -->
+<!-- wilcox.test(DO ~ Traitement, data = Testo_long, paired = TRUE, conf.int = TRUE) -->
+<!-- wilcox.test(Testo_large$Before, Testo_large$After, paired = TRUE,  -->
+<!--             conf.int = TRUE) -->
+<!-- wilcox.test(Testo_large$Diff, mu = 0, conf.int = TRUE) -->
+<!-- ``` -->
+
+<!-- Ici, la conclusion de ce test est : -->
+
+<!-- > Le test de Wilcoxon des rangs signés n'a pas permis de montrer de changement d'immuno-compétence suite à l'intégration de l'implant chirurgical de testostérone. On ne peut pas rejeter l'hypothèse nulle au seuil $\alpha = 0.05$ ($V = 61$, $p = 0.305$). La médiane des différences de densités optiques observées entre après et avant l'intervention chirurgicale vaut 0.055 (intervalle de confiance à 95% de cette différence : [-0.040 ; 0.145]). -->
+
+
+<!-- ### Exercice d'application -->
+
+<!-- Les autruches vivent dans des environnements chauds et elles sont donc fréquemment exposées au soleil durant de longues périodes. Dans des environnements similaires, les mammifères ont des mécanismes physiologiques leur permettant de réduire la température de leur cerveau par rapport à celle de leur corps. Une équipe de chercheurs [@Fuller2003] a testé si les autruches pouvaient faire de même. La température du corps et du cerveau de 37 autruches a été enregistrée par une journée chaude typique. Les résultats, exprimés en degrés Celsius, figurent dans [le fichier `Autruches.csv`](data/Autruches.csv). -->
+
+<!-- Importez ces données et faites-en l'analyse pour savoir s'il existe une différence de température moyenne entre le corps et le cerveau des autruches. Comparez ces résultats avec les prédictions faites pour les mammifères dans un environnement similaire. Comme toujours, vous commencerez par faire une analyse descriptive des données, sous forme numérique et graphique, avant de vous lancer dans les tests d'hypothèses. -->
+
+
+<!-- ## Comparaison de la moyenne de 2 populations : échantillons indépendants {#Indep} -->
+
+<!-- On s'intéresse maintenant aux méthodes permettant de comparer la moyenne de deux groupes ou de deux traitements dans la cas d'échantillons indépendants. Dans ce type de design expérimentaux, les les deux traitements sont appliqués à des échantillons indépendants issus de 2 populations. -->
+
+<!-- ### Exploration préalable des données -->
+
+<!-- Chez [le lézard cornu *Phrynosoma mcallii*](https://fr.wikipedia.org/wiki/Phrynosoma_mcallii), une frange de piquants entoure la tête. Une équipe d'herpétologues [@Young2004] a étudié la question suivante : des piquants plus longs autour de la tête protègent-ils le lézard cornu de son prédateur naturel, [la pie grièche migratrice *Lanius ludovicianus*](https://fr.wikipedia.org/wiki/Pie-grièche_migratrice) ? Ce prédateur a en effet une particularité : il accroche ses proies mortes à des barbelés ou des branches pour les consommer plus tard. Les chercheurs ont donc mesuré la longueur des cornes de 30 lézards retrouvés morts et accrochés dans des arbres par la pie grièche migratrice. Et en parallèle, ils ont mesuré les cornes de 154 individus vivants et en bonne santé choisis au hasard dans la population. -->
+
+<!-- #### Importation et examen visuel -->
+
+<!-- Les données de cette étude sont stockées dans [le fichier `HornedLizards.csv`](data/HornedLizards.csv). Importez ces données dans un objet nommé `Lizard` et examinez le tableau obtenu. -->
+
+<!-- ```{r, echo = FALSE, message = FALSE} -->
+<!-- Lizard <- read_csv("data/HornedLizards.csv") -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- Lizard -->
+<!-- ``` -->
+
+<!-- ```{r, eval = FALSE} -->
+<!-- View(Lizard) -->
+<!-- ``` -->
+
+<!-- On constate ici 3 choses : -->
+
+<!-- 1. la variable `Survival` devrait être un facteur. -->
+<!-- 2. le nom de la première colonne (`squamosalHornLength`) est bien trop long -->
+<!-- 3. pour un animal vivant, la mesure de longueur des cornes est manquante. Il nous faut donc retirer cet individu. -->
+
+<!-- Nous pouvons facilement réaliser les 3 modifications d'un coup : -->
+<!-- ```{r} -->
+<!-- Lizard <- Lizard %>%  -->
+<!--   mutate(Survival = factor(Survival)) %>%  -->
+<!--   rename(Horn_len = squamosalHornLength) %>%  -->
+<!--   filter(!is.na(Horn_len)) -->
+
+<!-- Lizard -->
+<!-- ``` -->
+
+
+<!-- #### Statistiques descriptives -->
+
+<!-- Comme dans la partie précédente sur les données appariées, les statistiques descriptives doivent être réalisées pour chaque groupe d'individus. Ici, le plus simple est d'utiliser la fonction `skim()` sur les données groupées par niveau du facteur `Survival` (avec la fonction `group_by()`) : -->
+
+<!-- ```{r, render = knitr::normal_print, size = 'small'} -->
+<!-- Lizard %>%  -->
+<!--   group_by(Survival) %>%  -->
+<!--   skim() -->
+<!-- ``` -->
+
+<!-- Outre ces informations sur les ordres de grandeurs observés dans chaque groupe de lézards (vivants ou morts), la fonction `skim()` ne fournit pas les effectifs observés dans chaque groupe. Pour cela, on peut utiliser une fonction décrite en biométrie 2, la fonction `count()` : -->
+
+<!-- ```{r} -->
+<!-- Lizard %>%  -->
+<!--   count(Survival) -->
+<!-- ``` -->
+
+<!-- On constate ici que les tailles d'échantillons sont très différentes. C'est normal compte tenu de la difficulté de repérer des individus morts dans la nature, et ce n'est pas gênant pour nos analyses puisque la taille des deux échantillons reste élevée.  -->
+
+<!-- On constate également que si les écarts-types des 2 groupes sont proches, les moyennes et médianes sont plus élevées dans le groupe des individus vivants que dans celui des individus morts (c'est le cas également des quartiles 1 et 3). -->
+
+<!-- #### Exploration graphique -->
+
+<!-- Comme toujours, nous pouvons réaliser 3 types de graphiques pour en apprendre plus sur la distribution des données dans les deux groupes. En revanche, sur le graphique de type "nuage de points", il est ici impossible de relier les points deux à deux. Non seulement cela n'aurait aucun sens puisque les échantillons sont indépendants, mais en outre, nous ne disposons pas du même nombre d'individus dans les 2 échantillons. -->
+
+<!-- 1. Stripchart -->
+<!-- ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2} -->
+<!-- Lizard %>%  -->
+<!--   ggplot(aes(x = Survival, y = Horn_len)) + -->
+<!--   geom_jitter(height = 0, width = 0.2, alpha = 0.5) -->
+<!-- ``` -->
+
+<!-- Ce premier graphique permet de visualiser très clairement les différences de tailles d'échantillons entre les deux groupes. Il permet également de voir que l'étendue des longueurs de cornes est plus importante dans le groupe des individus vivants que dans celui des individus morts. -->
+
+<!-- 2. Histogrammes -->
+<!-- ```{r} -->
+<!-- Lizard %>%  -->
+<!--   ggplot(aes(x = Horn_len)) + -->
+<!--   geom_histogram(bins = 15, color = grey(0.8)) + -->
+<!--   facet_wrap(~Survival, ncol = 1, scales = "free_y") -->
+<!-- ``` -->
+
+<!-- Notez ici l'utilisation de l'argument `scales = "free_y"` dans la fonction `facet_wrap()`. Cet argument permet de ne pas imposer la même échelle pour l'axe des ordonnées des 2 graphiques. Ce choix est ici pertinent puisque les effectifs des 2 groupes sont très différents. Faîtes un essai sans cet argument pour voir la différence. -->
+
+<!-- Cette visualisation nous montre que les données doivent suivre à peu près une distribution Normale dans les 2 groupes, et que globalement la longueur des cornes semble légèrement plus élevée dans le groupe des vivants (avec un mode autour de 25-26 mm) que dans le groupes des morts (avec un mode autour de 23-24 mm). -->
+
+<!-- 3. Boxplots -->
+
+<!-- ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2} -->
+<!-- Lizard %>%  -->
+<!--   ggplot(aes(x = Survival, y = Horn_len)) + -->
+<!--   geom_boxplot(notch = TRUE) -->
+<!-- ``` -->
+
+<!-- Nous visualisons ici encore plus clairement que sur les histogrammes le fait que les longueurs de cornes des individus vivants sont légèrement plus longues que celles des individus morts. D'ailleurs, puisque les intervalles de confiance à 95% des médianes des 2 groupes (les encoches) ne se chevauchent pas, un test de comparaison des moyennes devrait logiquement conclure à une différence significative en faveur des individus vivants. On peut également noter que la largeur de l'encoche pour les individus morts est plus importante que celle des vivants. Cela traduit une incertitude plus grande autour de la médiane estimée dans le groupe des individus morts. C'est tout à fait logique compte tenu des effectifs modestes dans ce groupe. -->
+
+<!-- ### Le test paramétrique -->
+
+<!-- Le test paramétrique le plus puissant que nous puissions faire pour comparer la moyenne de 2 populations est le test de Student. Ce test étant paramétrique, nous devons nous assurer que ses conditions d'application sont vérifiées avant de pouvoir le réaliser. -->
+
+<!-- #### Conditions d'application -->
+
+<!-- Les conditions d'application de ce test sont au nombre de 3 : -->
+
+<!-- 1. Chacun des deux échantillons est issu d'un échantillonnage aléatoire de la population générale. Comme toujours, en l'absence d'indication contraire, on considère que cette condition est toujours vérifiée. -->
+<!-- 2. La variable numérique étudiée est distribuée normalement dans les deux populations. Il nous faudra donc faire deux test de Shapiro-Wilk, un pour chaque échantillon. -->
+<!-- 3. L'écart-type (et la variance) de la variable numérique est la même dans les deux populations. C'est ce que l'on appelle l'homoscédasticité. -->
+
+<!-- En réalité, le test du $t$ de Student sur deux échantillons indépendants est assez robuste face au non respect de cette troisième condition d'application. Cela signifie que si cette troisième condition d'application n'est pas strictement vérifiée, les résultats du tests peuvent malgré tout rester valides. Lorsque les 2 échantillons comparés ont des tailles supérieures ou égales à 30, ce test fonctionne bien même si l'écart-type d'un groupe est jusqu'à 3 fois supérieur ou inférieur à l'écart-type du second groupe, à condition que la taille des 2 échantillons soit proche (ce qui n'est pas le cas ici !). En revanche, si les écart-types diffèrent de plus d'un facteur 3, ou si les tailles d'échantillons sont très différentes, le test du $t$ de Student ne devrait pas être utilisé. De même, si la taille des échantillons est inférieure à 30 et que les variances ne sont pas homogènes, ce test ne devrait pas être réalisé. En conclusion, les résultats du test du $t$ de Student à deux échantillons indépendants peuvent rester valides si la troisième condition d'homoscédasticité est violée, mais dans certains cas seulement. -->
+
+<!-- Le test du $t$ de Student sur deux échantillons indépendants est également assez robuste face à des écarts mineurs à la distribution Normale, tant que la forme des deux distributions comparées reste similaire. En outre, la robustesse de ce test augmente avec la taille des échantillons. -->
+
+<!-- Ici, nous allons donc commencer par vérifier la normalité de chacun des 2 échantillons en réalisant 2 tests de Shapiro-Wilk. Si ces tests confirment que la taille des cornes suit une distribution Normale dans la population générale, nous comparerons alors la variance des 2 populations (nous verrons 3 méthodes pour cela). Les statistiques descriptives réalisées plus haut nous ont montré que les écarts-types des 2 échantillons sont proches, mais que les tailles d'échantillons sont très différentes. L'homoscédasticité doit donc être vérifiée pour que nous ayons le droit de faire le test de Student. -->
+
+
+<!-- **1. Normalité des données** -->
+
+<!-- Nous commençons donc par tester la Normalité des 2 populations dont sont issus les échantillons. Pour les individus morts, les hypothèses sont les suivantes : -->
+
+<!-- - H$_0$ : la taille des cornes suit une distribution Normale dans la population des lézards cornus morts. -->
+<!-- - H$_1$ : la taille des cornes ne suit pas une distribution Normale dans la population des lézards cornus morts. -->
+
+<!-- ```{r} -->
+<!-- Lizard %>%  -->
+<!--   filter(Survival == "killed") %>%  -->
+<!--   pull(Horn_len) %>%  -->
+<!--   shapiro.test() -->
+<!-- ``` -->
+
+<!-- > La $p$-value est supérieure à $\alpha = 0.05$, donc on ne peut pas rejeter l'hypothèse nulle de normalité pour la taille des cornes de la population des lézards cornus morts (test de Shapiro-Wilk, $W = 0.93$, $p = 0.065$). -->
+
+<!-- Pour les individus vivants : -->
+
+<!-- - H$_0$ : la taille des cornes suit une distribution Normale dans la population des lézards cornus vivants. -->
+<!-- - H$_1$ : la taille des cornes ne suit pas une distribution Normale dans la population des lézards cornus vivants. -->
+
+<!-- ```{r} -->
+<!-- Lizard %>%  -->
+<!--   filter(Survival == "living") %>%  -->
+<!--   pull(Horn_len) %>%  -->
+<!--   shapiro.test() -->
+<!-- ``` -->
+
+<!-- > La $p$-value est inférieure à $\alpha = 0.05$, donc on rejette l'hypothèse nulle de normalité pour la taille des cornes de la population des lézards cornus vivants (test de Shapiro-Wilk, $W = 0.96$, $p < 0.001$). -->
+
+<!-- Si l'on examine l'histogramme des 2 échantillons, on constate toutefois que la forme des distributions des 2 séries de données est très proche. Pour les 2 échantillons, la distribution est en effet uni-modale, avec une asymétrie gauche assez marquée (une longue queue de distribution du côté gauche). La forme des distributions étant similaire (on parle bien de la forme des histogrammes et non de la position du pic), et les histogrammes étant proches de la forme typique d'une courbe en cloche, le test de Student devrait rester valide. En toute rigueur, il faudrait cependant préférer son alternative non paramétrique. -->
+
+<!-- **2. Homogénéité des variances** -->
+
+<!-- Le test le plus simple pour comparer la variance de 2 populations est le test $F$ : -->
+
+<!-- - H$_0$ : la variance des 2 populations est égale, leur ratio vaut 1 $\left(\frac{\sigma^2_{killed}}{\sigma^2_{living}} = 1\right)$. -->
+<!-- - H$_1$ : la variance des 2 populations est différente, leur ratio ne vaut pas 1 $\left(\frac{\sigma^2_{killed}}{\sigma^2_{living}} \neq 1\right)$. -->
+
+<!-- ```{r} -->
+<!-- var.test(Horn_len ~ Survival, data = Lizard) -->
+<!-- ``` -->
+
+<!-- > Ici, le ratio des variances (la variance des individus morts divisée par la variance des individus vivants) est très proche de 1 ($F = 1.06$, IC 95% : [0.63 ; 1.98]). Le test $F$ nous montre qu'il est impossible de rejeter H$_0$ : au seuil $\alpha = 0.05$, le ratio des variances n'est pas significativement différent de 1 (ddl = 29 et 153, $p = 0.79$), les variances sont homogènes. -->
+
+<!-- Le test de Bartlett est un autre test qui permet de comparer la variance de plusieurs populations (2 ou plus). Lorsque le nombre de populations est égal à 2 (comme ici), ce test est absolument équivalent au test $F$ ci-dessus. -->
+
+<!-- - H$_0$ : toutes les populations ont même variance ($\sigma^2_A = \sigma^2_B = \sigma^2_C = \cdots = \sigma^2_N$). -->
+<!-- - H$_1$ : au moins une population a une variance différente des autres. -->
+
+<!-- ```{r} -->
+<!-- bartlett.test(Horn_len ~ Survival, data = Lizard) -->
+<!-- ``` -->
+
+<!-- Enfin, le test de Levene devrait être préféré la plupart du temps. Comme le test de Bartlett, il permet de comparer la variance de plusieurs populations, mais il est plus robuste vis à vis de la non-normalité des données. -->
+
+<!-- - H$_0$ : toutes les populations ont même variance ($\sigma^2_A = \sigma^2_B = \sigma^2_C = \cdots = \sigma^2_N$). -->
+<!-- - H$_1$ : au moins une population a une variance différente des autres. -->
+
+<!-- ```{r} -->
+<!-- # Le test de Levene fait partie du package car. Il doit être chargé en mémoire -->
+<!-- # library(car) -->
+<!-- leveneTest(Horn_len ~ Survival, data = Lizard) -->
+<!-- ``` -->
+
+<!-- Ici encore, les conclusions sont les mêmes : -->
+
+<!-- > Il est impossible de rejeter l'hypothèse nulle d'homogénéité des variances au seuil $\alpha = 0.05$ (test de Levene, $F$ = 0.004, ddl = 1, $p = 0.953$). -->
+
+<!-- #### Réalisation du test et interprétation -->
+
+<!-- Puisque la taille des cornes du lézard cornu suit approximativement la même distribution "presque Normale" dans les 2 populations (lézards morts et vivants) et que ces 2 populations ont des variances homogènes, on peut réaliser le test du $t$ de Student sur deux échantillons indépendants. -->
+
+<!-- - H$_0$ : la moyenne des 2 populations est égale, leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$). -->
+<!-- - H$_1$ : la moyenne des 2 populations est différente, leur différence ne vaut pas 0 ($\mu_{killed}-\mu_{living} \neq 0$). -->
+
+<!-- ```{r} -->
+<!-- t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE) -->
+<!-- ``` -->
+
+<!-- Notez bien la syntaxe :  -->
+
+<!-- - Nous utilisons ici la syntaxe du type "formule" faisant appel au symbole "`~`" (Longueur des cornes en fonction de la Survie) et à l'argument "`data = `". -->
+<!-- - L'argument "`paired = TRUE`" a disparu puisque nous avons ici deux échantillons indépendants -->
+<!-- - L'argument "`var.equal = TRUE`" doit obligatoirement être spécifié : nous nous sommes assuré que l'homogénéité des variances était vérifiée. Il faut donc l'indiquer à R afin que le test de Student classique soit réalisé. Si on omet de le spécifier, c'est un autre test qui est réalisé (voir plus bas). -->
+
+<!-- > Au seuil $\alpha$ de 5%, on rejette l'hypothèse nulle d'égalité des moyennes de la longueur des cornes entre lézards vivants et morts (test $t$ de Student sur deux échantillons indépendant, $t = -4.35$, ddl = 182, $p < 0.001$). Les lézards morts ont en moyenne des cornes plus courtes ($\hat{\mu}_{killed} = 21.99$ millimètres) que les lézards vivants ($\hat{\mu}_{living} = 24.28$ millimètres). La gamme des valeurs les plus probables pour la différence de moyenne entre les deux populations est fournie par l'intervalle de confiance à 95% de la différence de moyennes : [-3.34 ; -1.25]. -->
+
+<!-- Ce test confirme donc bien l'impression des chercheurs : les lézards principalement pris pour cibles par les pies grièches migratrices ont des cornes en moyenne plus courtes (probablement entre 1.25 et 3.34 millimètres de moins) que les lézards de la population générale. Avoir des cornes plus longues semble donc protéger les lézards de la prédation, du moins dans une certaine mesure. -->
+
+<!-- ### L'alternative non paramétrique -->
+
+<!-- Si les conditions d'application du test de Student ne sont pas vérifiées, nous devons utiliser un équivalent non paramétrique. C'est le cas du **test de Wilcoxon sur la somme des rangs** (également appelé test de Mann-Whitney). Comme pour tous les tests de Wilcoxon, la comparaison porte alors non plus sur les moyennes mais sur les médianes. -->
+
+<!-- - H$_0$ : la médiane des 2 populations est égale, leur différence vaut 0 ($med_{killed}-med_{living} = 0$). -->
+<!-- - H$_1$ : la médiane des 2 populations est différente, leur différence ne vaut pas 0 ($med_{killed}-med_{living}\neq 0$). -->
+
+<!-- ```{r} -->
+<!-- wilcox.test(Horn_len ~ Survival, data = Lizard, conf.int = TRUE) -->
+<!-- ``` -->
+
+<!-- L'argument `var.equal = TRUE` n'existe pas pour ce test, puisque c'est justement un test non paramétrique qui ne requiert pas l'homogénéité des variances. En revanche, comme pour tous les autres tests de Wilcoxon que nous avons réalisés dans ce TP, l'argument `conf.int = TRUE` permet d'afficher les estimateurs pertinents, ici, la différence de médiane entre les 2 populations et l'intervalle de confiance à 95% de cette différence de médiane. -->
+
+<!-- La conclusion est ici la même que pour le test de Student : puisque la $p$-value est très inférieure à $\alpha$, on rejette l'hypothèse nulle : les médianes sont bel et bien différentes. -->
+
+
+<!-- Enfin, dans le cas où la variable étudiée suit la loi Normale dans les deux populations mais qu'elle n'a pas la même variance dans les deux populations, il est toujours possible de réaliser un test de Wilcoxon, mais il est souvent préférable de réaliser un test de Student modifié : le **test approché du $t$ de Welch**. Ce test est moins puissant que le test de Student classique, mais il reste plus puissant que le test de Wilcoxon, et surtout, il permet de comparer les moyennes et non les médianes -->
+
+<!-- - H$_0$ : la moyenne des 2 populations est égale, leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$). -->
+<!-- - H$_1$ : la moyenne des 2 populations est différente, leur différence ne vaut pas 0 ($\mu_{killed}-\mu_{living} \neq 0$). -->
+
+<!-- ```{r} -->
+<!-- t.test(Horn_len ~ Survival, data = Lizard) -->
+<!-- ``` -->
+
+<!-- La seule différence par rapport à la syntaxe du test $t$ de Student paramétrique est la suppression de l'argument `var.equal = TRUE`. Attention donc, à bien utiliser la syntaxe correcte. Le test du $t$ de Welch ne devrait être réalisé que lorsque la normalité est vérifiée pour les 2 populations, mais pas l'homoscédasticité. Par rapport au test de Student classique, on constate que le nombre de degrés de libertés est très différent, et donc la $p$-value également. Les bornes de l'intervalle de confiance à 95% de la différence de moyenne sont différentes également puisque leur calcul a été fait en supposant que les 2 populations n'avaient pas même variance. -->
+
+<!-- ### Exercice d'application -->
+
+<!-- On s'intéresse à la différence de taille supposée entre hommes et femmes. [Le fichier `HommesFemmes.xls`](data/HommesFemmes.xls) contient les tailles en centimètres de 38 hommes et 43 femmes choisis au hasard parmi les étudiants de première année à La Rochelle Université. Importez, mettez en forme et analysez ces données. Vous prendrez soin de retirer les éventuelles valeurs manquantes, vous prendrez le temps d'examiner les données à l'aide de statistiques descriptives et de représentations graphiques adaptées, puis vous tenterez de répondre à la question suivante : les hommes et les femmes inscrits en première année à La Rochelle Université ont-il la même taille ? Si non, caractérisez cette différence de taille. -->
+
+
+
+<!-- ## Tests bilatéraux et unilatéraux -->
+
+
+<!-- ### Principe -->
+
+<!-- Jusqu'à maintenant, tous les tests que nous avons réalisés sont des tests bitaléraux. Pour chaque test, l'hypothèse nulle est imposée. En revanche, pour certains tests, l'hypothèse alternative est à choisir (et à spécifier) par l'utilisateur parmi 3 possibilités : -->
+
+<!-- - Une hypothèse bilatérale. C'est celle qui est utilisée par défaut si l'utilisateur ne précise rien. -->
+<!-- - Deux hypothèses unilatérales possibles, qui doivent être spécifiées explicitement par l'utilisateur. -->
+
+<!-- Les tests unilatéraux peuvent concerner tous les tests pour lesquels les hypothèses sont de la forme suivante : -->
+
+<!-- - H$_0$ : la valeur d'un paramètre de la population est égale à $k$ ($k$ peut être une valeur fixe, arbitraire, choisie par l'utilisateur, ou la valeur d'un paramètre d'une autre populations). -->
+<!-- - H$_1$ : la valeur d'un paramètre de la population **n'est pas égale à** $k$. -->
+
+<!-- En réalité, si nous remplaçons l'hypothèse H$_1$ par : -->
+
+<!-- - H$_1$ : la valeur d'un paramètre de la population **est supérieure à** $k$. -->
+
+<!-- ou par :  -->
+
+<!-- - H$_1$ : la valeur d'un paramètre de la population **est inférieure à** $k$. -->
+
+<!-- nous réalisons un test unilatéral. -->
+
+<!-- Dans R, la syntaxe permettant de spécifier l'hypothèse alternative que nous souhaitons utiliser est toujours la même. Il faut préciser, au moment de faire le test l'argument suivant : -->
+
+<!-- - `alternative = "two.sided"` : pour faire un test bilatéral. Si on ne le fait pas explicitement, c'est de toutes façons cette valeur qui est utilisée par défaut. -->
+<!-- - `alternative = "greater"` : pour choisir l'hypothèse unilatérale "`>`". -->
+<!-- - `alternative = "less"` : pour choisir l'hypothèse unilatérale "`<`". -->
+
+<!-- Attention : le choix d'utiliser "greater" ou "less" dépend donc de l'ordre dans lequel les échantillons sont spécifiés. Cette synatxe est valable pour tous les tests de Student vus jusqu'ici (un échantillon, deux échantillons appariés, deux échantillons indépendants) et pour leurs alternatives non paramétriques (test de Wilcoxon des rangs signés, test de Wilcoxon de la somme des rangs, test du $t$ de Welch). -->
+
+<!-- **Attention** : comme indiqué en TD, l'utilisation de tests unilatéraux doit être réservée exclusivement aux situations pour lesquelles le choix de l'hypothèse unilatérale est possible à justifier par un mécanisme quelconque (biologique, physiologique, comportemental, écologique, génétique, évolutif, biochimique, etc.). Observer que l'un des échantillons a une moyenne plus grande ou plus faible qu'un autre lors de la phase des statistiques descriptives des données n'est pas du tout une raison suffisante. Il faut pouvoir justifier le choix de l'hypothèse alternative par une explication valable. Lorsqu'il est pertinent de réaliser un test unilatéral, on doit toujours le faire, car toutes choses étant égales par ailleurs, un test unilatéral est toujours plus puissant qu'un test bilatéral. -->
+<!-- Reprenons l'un des exemples examinés précédemment pour mieux comprendre comment tout cela fonctionne. -->
+
+<!-- ### Un exemple pas à pas -->
+
+<!-- Reprenons l'exemple des lézards cornus. L'étude a été réalisée parce que les chercheurs supposaient que la longueur des cornes des lézards était susceptible de leur fournir une protection face à la prédation. Autrement dit, les chercheurs supposaient que des cornes *plus longues* devaient fournir une meilleure protection vis à vis de la prédation. Ainsi, les lézards morts devaient avoir des cornes moins longues en moyenne que les les lézards vivants, simplement parce que porter des cornes courtes expose plus fortement les individus à la prédation. Nous avons donc une bonne raison "écologique/évolutive" de considérer un test unilatéral (la susceptibilité face à la prédation qui a entraîné une pression de sélection sur la longueur des cornes des lézards). -->
+
+<!-- Lorsque nous avons examiné cette question, nous avons fait le test du $t$ de Student sur échantillons indépendants de la façon suivante : -->
+
+<!-- ```{r} -->
+<!-- t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE) -->
+<!-- ``` -->
+
+<!-- Comme l'indiquent les résultats fournis, l'hypothèse alternative utilisée pour faire le test est : "La vraie différence de moyenne n'est pas égale à 0". Autrement dit, nous avons fait un test bilatéral avec les hypothèses suivantes : -->
+
+<!-- - H$_0$ : la moyenne des 2 populations est égale, leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$). -->
+<!-- - H$_1$ : la moyenne des 2 populations est différente, leur différence ne vaut pas 0 ($\mu_{killed}-\mu_{living} \neq 0$). -->
+
+<!-- Ce test est donc rigoureusement équivalent à celui-ci : -->
+
+<!-- ```{r} -->
+<!-- t.test(Horn_len ~ Survival,  -->
+<!--        data = Lizard, var.equal = TRUE, -->
+<!--        alternative = "two.sided") -->
+<!-- ``` -->
+
+<!-- Ici, nous souhaitons en fait réaliser un **test unilatéral** avec les hypothèses suivantes : -->
+
+<!-- - H$_0$ : la moyenne de longueur des cornes de la population des lézards morts est égale à celle des lézards vivants. Leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$). -->
+<!-- - H$_1$ : la moyenne de longueur des cornes de la population des lézards morts est **inférieure** à celle des lézards vivants. Leur différence est inférieure à 0 ($\mu_{killed}-\mu_{living} < 0$). -->
+
+<!-- ```{r} -->
+<!-- t.test(Horn_len ~ Survival,  -->
+<!--        data = Lizard, var.equal = TRUE, -->
+<!--        alternative = "less") -->
+<!-- ``` -->
+
+<!-- Puisque la $p$-value de ce test est inferieure à $\alpha = 0.05$, on rejette l'hypothèse nulle de l'égalité des moyennes. On valide donc l'hypothèse alternative : les lézards cornus morts ont en moyenne des cornes plus courtes que les lézards vivants. Cette différence de longueur de cornes est en faveur des lézards vivants et vaut très probablement au moins $1.4$ millimètres (c'est l'intervalle de confiance à 95% de la différence de moyennes qui nous le dit). -->
+
+<!-- Dernière chose importante : il ne faut pas se tromper dans le choix de l'hypothèse alternative. En effet, nous aurions pu tenter de tester exactement la même chose en formulant les hypothèses suivantes :  -->
+
+<!-- - H$_0$ : la moyenne de longueur des cornes de la population des lézards **vivants** est égale à celle des lézards **morts**. Leur différence vaut 0 ($\mu_{living}-\mu_{killed} = 0$). -->
+<!-- - H$_1$ : la moyenne de longueur des cornes de la population des lézards **vivants** est **supérieure** à celle des lézards **morts**. Leur différence est **supérieure** à 0 ($\mu_{living}-\mu_{killed} > 0$). -->
+
+<!-- Ce test est normalement exactement le même que précédemment. Toutefois, si on essaie de le réaliser, on rencontre un problème : -->
+
+<!-- ```{r} -->
+<!-- t.test(Horn_len ~ Survival,  -->
+<!--        data = Lizard, var.equal = TRUE, -->
+<!--        alternative = "greater") -->
+<!-- ``` -->
+
+<!-- Ici, la $p$-value est très supérieure à $\alpha$ puisqu'elle vaut 1. Une $p$-value de 1 devrait toujours attirer votre attention. La conclusion devrait donc être que l'on ne peut pas rejeter H$_0$ : les lézards morts et vivants ont en moyenne des cornes de même longueur. Nous savons pourtant que c'est faux.  -->
+
+<!-- Le problème est ici liè à l'ordre des catégories "vivant" ou "mort" dans le facteur `Survival` du tableau `Lizard`. Les dernières lignes des tests que nous venons de faire indiquent la moyenne de chaque groupe, mais le groupe "killed" apparaît toujours avant le groupe "living". C'est l'ordre des niveaux dans le facteur `Survival` qui doit dicter la syntaxe appropriée : -->
+
+<!-- ```{r} -->
+<!-- Lizard$Survival -->
+<!-- ``` -->
+
+<!-- Par défaut, dans R, les niveaux d'un facteur sont classés par ordre alphabétique sauf si on spécifie manuellement un ordre différent. Ici, le niveau "killed" est donc le premier niveau du facteur, et "living" le second. Lorsque l'on réalise un test de Student avec ces données (ou un test de Wilcoxon d'ailleurs), la différence de moyenne qui est examinée par le test est donc "moyenne des `killed` - moyenne des `living`". Lorsque nous avons tapé ceci : -->
+
+<!-- ```{r, eval = FALSE} -->
+<!-- t.test(Horn_len ~ Survival,  -->
+<!--        data = Lizard, var.equal = TRUE, -->
+<!--        alternative = "greater") -->
+<!-- ``` -->
+
+<!-- nous avons en réalité posé les hypothèses suivantes : -->
+
+<!-- - H$_0$ : la moyenne de longueur des cornes de la population des lézards **morts** est égale à celle des lézards **vivants**. Leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$). -->
+<!-- - H$_1$ : la moyenne de longueur des cornes de la population des lézards **morts** est **supérieure** à celle des lézards **vivants**. Leur différence est **supérieure** à 0 ($\mu_{killed}-\mu_{living} > 0$). -->
+
+<!-- Ce test est donc erronné, ce qui explique qu'il nous renvoie un résultat faux et une $p$-value de 1. Ici, puisque l'ordre des catégories est "killed" d'abord et "living" ensuite, la seule façon correcte de faire un test unilatéral qui a du sens est donc celle que nous avons réalisée en premier :  -->
+
+<!-- ```{r, eval = FALSE} -->
+<!-- t.test(Horn_len ~ Survival,  -->
+<!--        data = Lizard, var.equal = TRUE, -->
+<!--        alternative = "less") -->
+<!-- ``` -->
+
+
+<!-- ### Exercice d'application -->
+
+<!-- Reprenez chaque exemple et exercice de cette séance de TP et identifiez les situations où un test unilatéral aurait du sens. Si vous en trouvez, faites ce test et assurez-vous que les hypothèses choisies sont bien celles qui sont utilisées lors du test. -->
