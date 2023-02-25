@@ -3,6 +3,7 @@ output: html_document
 editor_options: 
   chunk_output_type: console
 ---
+
 # Comparaison de la moyenne d'un échantillon à une valeur théorique {#sec-moy1}
 
 ## Pré-requis {#sec-packages}

@@ -43,6 +43,8 @@ format:
     smooth-scroll: true
     link-external-icon: true
     link-external-newwindow: true
+    toc: true
+    toc-depth: 4
   pdf:
     documentclass: scrreprt
     papersize: a4
