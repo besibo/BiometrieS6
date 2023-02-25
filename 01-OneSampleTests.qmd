@@ -586,7 +586,7 @@ Si les données ne suivent pas la loi Normale, la médiane est bien la métrique
 Enfin, les tests de Wilcoxon renvoient souvent des messages d'avertissement. Il ne s'agit que de ça : des avertissements. Tant que la $p$-value d'un test est éloignée de la valeur seuil $\alpha$, cela n'a pas d'importance. Quand en revanche la $p$-value est très proche de $\alpha$, les messages d'avertissement doivent vous alerter : il faut être très prudent face aux conclusions du test qui peuvent alors être assez "fragiles".
 
 
-## La notion d'erreur et de puissance statistique
+## Les notions d'erreur et de puissance statistique
 
 Pour avoir le droit de réaliser un test paramétrique, il faut au préalable vérifier qu'un certain nombre de conditions sont vérifiées. Si ce n'est pas le cas, on réalise un équivalent non paramétrique. On peut alors se demander pourquoi ne pas se contenter de faire des tests non paramétrique systématiquement, sans s'embêter à faire des tests supplémentaires ou des tests paramétriques.
 
@@ -602,16 +602,16 @@ La raison est simple et elle est liée aux notions d'erreur et de puissance stat
 - **Puissance statistique** : notée 1 - $\beta$), c'est la probabilité de rejeter l'hypothèse nulle à raison. C'est donc la probabilité de rejeter $H_0$ quand elle est réellement fausse.
 :::
 
-À chaque fois que l'on réalise un test statistique, on comment nécessairement les 2 types d'erreurs $\alpha$ et $\beta$. On souhaite évidemment minimiser les erreurs, mais on ne peut malheureusement pas faire baisser les 2 en même temps. Faire baisser $\alpha$ (pour diminuer les faux positifs) conduit toujours à augmenter $\beta$ (les faux négatifs). Faire baisser $\alpha$ revient en effet à accepter plus souvent l'hypothèse nulle quand elle est vraie. Cela conduit inévitablement accepter aussi plus souvent l'hypothèse nulle quand elle est vraie (et donc, à augmenter les faux négatifs).
+À chaque fois que l'on réalise un test statistique, on commet nécessairement les 2 types d'erreurs $\alpha$ et $\beta$. On souhaite évidemment minimiser les erreurs, mais on ne peut malheureusement pas faire baisser les 2 en même temps. Faire baisser $\alpha$ (pour diminuer les faux positifs) conduit toujours à augmenter $\beta$ (les faux négatifs). Faire baisser $\alpha$ revient en effet à accepter plus souvent l'hypothèse nulle quand elle est vraie. Cela conduit inévitablement accepter aussi plus souvent l'hypothèse nulle quand elle est fausse (et donc, à augmenter les faux négatifs).
 
 Pour bien comprendre l'enjeu associé à ces erreurs, prenons l'exemple de notre système judiciaire. Lorsqu'un accusé est jugé, il est présumé innocent jusqu'à preuve du contraire. Le procès est l'équivalent d'un test statistique, avec :
 
 - $H_0$ : l'accusé est innocent
 - $H_1$ : l'accusé est coupable
 
-Commettre une erreur de type I revient à condamner à tort l'accusé (on rejette à tort $H_0$), donc on condamne un innocent. À l'inverse, commettre une erreur de type II revient à libérer un coupable (accepter à tort $H_0$). Un système de justice plus strict condamnera un plus grand nombre d'accusé, qu'ils soient coupables ou non. Un système plus strict fera donc augmenter l'erreur de type I et baisser l'erreur de type II. À vous de voir ce que vous préférez : libérer plus de coupables, ou condamner plus d'innocents ?
+Commettre une erreur de type I revient à condamner à tort l'accusé (on rejette à tort $H_0$), donc on condamne un innocent. À l'inverse, commettre une erreur de type II revient à libérer un coupable (accepter à tort $H_0$). Un système de justice plus strict condamnera un plus grand nombre d'accusés, qu'ils soient coupables ou non. Un système plus strict fera donc augmenter l'erreur de type I et baisser l'erreur de type II. À vous de voir ce que vous préférez : libérer plus de coupables, ou condamner plus d'innocents ?
 
-En statistiques, la question est tranchée puisqu'on préfère maintenir l'erreur de type I à un niveau assez faible (à 5% ou moins), quitte à laisser augmenter l'erreur de type II (qui est acceptable jusqu'à 20% environ). Toutefois, seule l'erreur de type I est sous notre contrôle. En effet, c'est nous qui la choisissons lorsque l'on fixe le seuil $\alpha$ de nos tests statistiques.
+En statistiques, la question est tranchée puisqu'on préfère maintenir l'erreur de type I à un niveau assez faible (à 5% ou moins), quitte à laisser augmenter l'erreur de type II (qui est considérée comme acceptable jusqu'à 20% environ). Toutefois, seule l'erreur de type I est sous notre contrôle. En effet, c'est nous qui la choisissons lorsque l'on fixe le seuil $\alpha$ de nos tests statistiques.
 
 :::{.callout-important}
 ## À retenir
