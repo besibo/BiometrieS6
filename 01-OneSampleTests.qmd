@@ -41,12 +41,8 @@ Pensez à installer tous les packages listés ci-dessous avant de les charger en
 
 Vous aurez également besoin des jeux de données suivants :
 
-<!-- - [`Autruches.csv`](data/Autruches.csv) -->
-<!-- - [`HommesFemmes.xls`](data/HommesFemmes.xls) -->
-<!-- - [`HornedLizards.csv`](data/HornedLizards.csv) -->
 - [`Temperature.csv`](data/Temperature.csv)
 - [`Temperature2.csv`](data/Temperature2.csv)
-<!-- - [`Testosterone.csv`](data/Testosterone.csv) -->
 
 Enfin, je spécifie ici une fois pour toutes le thème que j'utiliserai pour tous les graphiques de ce chapitre. Libre à vous de choisir un thème différent ou de vous contenter du thème proposé par défaut :
 
@@ -77,7 +73,7 @@ Nous avons vu au cours des semestres précédents quels indices statistiques il 
 
 ## Importation et mise en forme des données
 
-Nous allons travailler ici sur les données contenues dans [le fichier `Temperature.csv`](data/Temperature.csv). Téléchargez ces données dans votre répertoire de travail (attention : ne les ouvrez pas avec Excel !), puis importez les données dans `RStudio` grâce à l'assistant d'importation. Si vous ne savez plus comment faire, consultez [la section dédiée à l'importation des données dans le livre en ligne de Biométrie du semestre 3](https://besibo.github.io/BiometrieS3/04-DataWrangling.html#plaintext)
+Nous allons travailler ici sur les données contenues dans le fichier [`Temperature.csv`](data/Temperature.csv). Téléchargez ces données dans votre répertoire de travail (attention : ne les ouvrez pas avec Excel !), puis importez les données dans `RStudio` grâce à l'assistant d'importation. Si vous ne savez plus comment faire, consultez [la section dédiée à l'importation des données dans le livre en ligne de Biométrie du semestre 3](https://besibo.github.io/BiometrieS3/04-DataWrangling.html#plaintext)
 
 ```{r}
 #| echo: false
@@ -213,36 +209,6 @@ On constate ici que les bornes inférieure (36.8ºC) et supérieure (37.1ºC) de
 
 Ici, puisque nous ne disposons que d'une unique variable numérique et que nous n'avons donc qu'un unique groupe, les représentations graphiques que nous allons réaliser doivent nous permettre d'examiner la **distribution des données**. Pour cela, nous pouvons réaliser soit un histogramme, soit un diagramme de densité.
 
-<!-- 1. Les nuages de points ou stripcharts : -->
-
-<!-- ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2} -->
-<!-- Temp_clean %>% -->
-<!--   ggplot(aes(x = 1, y = temperature)) + -->
-<!--   geom_point() -->
-<!-- ``` -->
-
-<!-- Dans la mesure où souvent, plusieurs observations ont la même valeur, il faut tenir compte de l'over-plotting. Si vous ne vous rappelez plus de quoi il s'agit, consultez [la section 4.3.4](https://besibo.github.io/DA/viz.html#over-plotting) du livre en ligne de Biométrie 2. Globalement, pour visualiser correctement les données, on va jouer soit sur la transparence des points, soit sur l'ajout d'un bruit aléatoire horizontal qui permettra de distinguer plus facilement les points et de repérer les zones où les points sont abondants ou rares : -->
-
-<!-- ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2} -->
-<!-- Temp_clean %>% -->
-<!--   ggplot(aes(x = 1, y = temperature)) + -->
-<!--   geom_jitter(height = 0, width = 0.1) + -->
-<!--   xlim(0.5, 1.5) -->
-<!-- ``` -->
-
-<!-- La fonction `xlim()` permet de spécifier manuellement les valeurs limites que l'on souhaite pour l'axe des abscisses. Ici, cet axe n'a aucune signification particulière puisque nous n'avons qu'une unique série de données (c'est la raison pour laquelle les points sont centrés sur l'abscisse x = 1). Nous pouvons donc le masquer comme ceci : -->
-
-<!-- ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2} -->
-<!-- Temp_clean %>% -->
-<!--   ggplot(aes(x = 1, y = temperature)) + -->
-<!--   geom_jitter(height = 0, width = 0.1) + -->
-<!--   xlim(0.5, 1.5) + -->
-<!--   theme(axis.text.x = element_blank(), -->
-<!--         axis.ticks.x = element_blank(), -->
-<!--         axis.title.x = element_blank()) -->
-<!-- ``` -->
-
-<!-- On constate ici que la répartition des points est assez régulière, avec néanmoins une majorité de points entre 36.8 et 37.3 degrés Celsius. -->
 
 ### Histogramme
 
