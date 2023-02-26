@@ -1,9 +1,42 @@
 # Comparaison de moyennes : deux échantillons indépendants {#sec-moy3}
 
-En cours...
+En cours
+
+<!-- ## Pré-requis {#sec-packages3} -->
+
+<!-- Pour ce nouveau chapitre, je vous conseille de travailler dans un nouveau script que vous placerez dans votre répertoire de travail, et dans une nouvelle session de travail (Menu `Session > Restart R`). Inutile en revanche de créer un nouveau `Rproject` : vos pouvez tout à fait avoir plusieurs script dans le même répertoire de travail et pour un même `Rproject`. Comme toujours, consultez [le livre en ligne du semestre 3](https://besibo.github.io/BiometrieS3/01-R-basics.html#sec-code) si vous ne savez plus comment faire. -->
+
+<!-- Si vous êtes dans une nouvelle session de travail (ou que vous avez quitté puis relancé `RStudio`), vous devrez penser à re-charger en mémoire les packages utiles. Dans ce chapitre, vous aurez besoin d'utiliser des mêmes packages que précédemment : -->
+
+<!-- - le `tidyverse` [@R-tidyverse], qui comprend notamment le package `readr` [@R-readr], pour importer facilement des fichiers `.csv` au format `tibble`, le package `dplyr` [@R-dplyr], pour manipuler des tableaux, et le package `ggplot2` [@R-ggplot2] pour les représentations graphiques. -->
+<!-- <!-- - `readxl` [@R-readxl], pour importer facilement des fichiers Excel au format `tibble`. --> -->
+<!-- - `skimr` [@R-skimr], qui permet de calculer des résumés de données très informatifs. -->
+<!-- <!-- - `car` [@R-car], qui permet d'effectuer le test de comparaison des variances de Levene. --> -->
+<!-- <!-- - les packages `palmerpenguins` [@R-palmerpenguins] et `nycflights13` [@R-nycflights13], pour accéder à plusieurs jeux de données que nous utiliserons en guise d'exemples ou pour les exercices (`penguins`, `flights`, `weather`...). --> -->
+
+<!-- ```{r} -->
+<!-- #| warning: false -->
+<!-- #| message: false -->
+
+<!-- library(tidyverse) -->
+<!-- library(skimr) -->
+<!-- ``` -->
+
+<!-- Vous aurez également besoin des jeux de données suivants que vous pouvez dès maintenant télécharger dans votre répertoire de travail : -->
+
+<!-- - [`Autruches.csv`](data/Autruches.csv) -->
+<!-- - [`Testosterone.csv`](data/Testosterone.csv) -->
+<!-- <!-- - [`HommesFemmes.xls`](data/HommesFemmes.xls) --> -->
+<!-- <!-- - [`HornedLizards.csv`](data/HornedLizards.csv) --> -->
+
+<!-- Enfin, je spécifie ici une fois pour toutes le thème que j'utiliserai pour tous les graphiques de ce chapitre. Libre à vous de choisir un thème différent ou de vous contenter du thème proposé par défaut : -->
+
+<!-- ```{r} -->
+<!-- theme_set(theme_bw()) -->
+<!-- ``` -->
 
 
-<!-- ## Comparaison de la moyenne de 2 populations : échantillons indépendants {#Indep} -->
+
 
 <!-- On s'intéresse maintenant aux méthodes permettant de comparer la moyenne de deux groupes ou de deux traitements dans la cas d'échantillons indépendants. Dans ce type de design expérimentaux, les les deux traitements sont appliqués à des échantillons indépendants issus de 2 populations. -->
 
@@ -15,7 +48,10 @@ En cours...
 
 <!-- Les données de cette étude sont stockées dans [le fichier `HornedLizards.csv`](data/HornedLizards.csv). Importez ces données dans un objet nommé `Lizard` et examinez le tableau obtenu. -->
 
-<!-- ```{r, echo = FALSE, message = FALSE} -->
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- #| message: false -->
+
 <!-- Lizard <- read_csv("data/HornedLizards.csv") -->
 <!-- ``` -->
 
@@ -35,9 +71,9 @@ En cours...
 
 <!-- Nous pouvons facilement réaliser les 3 modifications d'un coup : -->
 <!-- ```{r} -->
-<!-- Lizard <- Lizard %>%  -->
-<!--   mutate(Survival = factor(Survival)) %>%  -->
-<!--   rename(Horn_len = squamosalHornLength) %>%  -->
+<!-- Lizard <- Lizard %>% -->
+<!--   mutate(Survival = factor(Survival)) %>% -->
+<!--   rename(Horn_len = squamosalHornLength) %>% -->
 <!--   filter(!is.na(Horn_len)) -->
 
 <!-- Lizard -->
@@ -49,19 +85,19 @@ En cours...
 <!-- Comme dans la partie précédente sur les données appariées, les statistiques descriptives doivent être réalisées pour chaque groupe d'individus. Ici, le plus simple est d'utiliser la fonction `skim()` sur les données groupées par niveau du facteur `Survival` (avec la fonction `group_by()`) : -->
 
 <!-- ```{r, render = knitr::normal_print, size = 'small'} -->
-<!-- Lizard %>%  -->
-<!--   group_by(Survival) %>%  -->
+<!-- Lizard %>% -->
+<!--   group_by(Survival) %>% -->
 <!--   skim() -->
 <!-- ``` -->
 
 <!-- Outre ces informations sur les ordres de grandeurs observés dans chaque groupe de lézards (vivants ou morts), la fonction `skim()` ne fournit pas les effectifs observés dans chaque groupe. Pour cela, on peut utiliser une fonction décrite en biométrie 2, la fonction `count()` : -->
 
 <!-- ```{r} -->
-<!-- Lizard %>%  -->
+<!-- Lizard %>% -->
 <!--   count(Survival) -->
 <!-- ``` -->
 
-<!-- On constate ici que les tailles d'échantillons sont très différentes. C'est normal compte tenu de la difficulté de repérer des individus morts dans la nature, et ce n'est pas gênant pour nos analyses puisque la taille des deux échantillons reste élevée.  -->
+<!-- On constate ici que les tailles d'échantillons sont très différentes. C'est normal compte tenu de la difficulté de repérer des individus morts dans la nature, et ce n'est pas gênant pour nos analyses puisque la taille des deux échantillons reste élevée. -->
 
 <!-- On constate également que si les écarts-types des 2 groupes sont proches, les moyennes et médianes sont plus élevées dans le groupe des individus vivants que dans celui des individus morts (c'est le cas également des quartiles 1 et 3). -->
 
@@ -71,7 +107,7 @@ En cours...
 
 <!-- 1. Stripchart -->
 <!-- ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2} -->
-<!-- Lizard %>%  -->
+<!-- Lizard %>% -->
 <!--   ggplot(aes(x = Survival, y = Horn_len)) + -->
 <!--   geom_jitter(height = 0, width = 0.2, alpha = 0.5) -->
 <!-- ``` -->
@@ -80,7 +116,7 @@ En cours...
 
 <!-- 2. Histogrammes -->
 <!-- ```{r} -->
-<!-- Lizard %>%  -->
+<!-- Lizard %>% -->
 <!--   ggplot(aes(x = Horn_len)) + -->
 <!--   geom_histogram(bins = 15, color = grey(0.8)) + -->
 <!--   facet_wrap(~Survival, ncol = 1, scales = "free_y") -->
@@ -93,7 +129,7 @@ En cours...
 <!-- 3. Boxplots -->
 
 <!-- ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2} -->
-<!-- Lizard %>%  -->
+<!-- Lizard %>% -->
 <!--   ggplot(aes(x = Survival, y = Horn_len)) + -->
 <!--   geom_boxplot(notch = TRUE) -->
 <!-- ``` -->
@@ -127,9 +163,9 @@ En cours...
 <!-- - H$_1$ : la taille des cornes ne suit pas une distribution Normale dans la population des lézards cornus morts. -->
 
 <!-- ```{r} -->
-<!-- Lizard %>%  -->
-<!--   filter(Survival == "killed") %>%  -->
-<!--   pull(Horn_len) %>%  -->
+<!-- Lizard %>% -->
+<!--   filter(Survival == "killed") %>% -->
+<!--   pull(Horn_len) %>% -->
 <!--   shapiro.test() -->
 <!-- ``` -->
 
@@ -141,9 +177,9 @@ En cours...
 <!-- - H$_1$ : la taille des cornes ne suit pas une distribution Normale dans la population des lézards cornus vivants. -->
 
 <!-- ```{r} -->
-<!-- Lizard %>%  -->
-<!--   filter(Survival == "living") %>%  -->
-<!--   pull(Horn_len) %>%  -->
+<!-- Lizard %>% -->
+<!--   filter(Survival == "living") %>% -->
+<!--   pull(Horn_len) %>% -->
 <!--   shapiro.test() -->
 <!-- ``` -->
 
@@ -199,7 +235,7 @@ En cours...
 <!-- t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE) -->
 <!-- ``` -->
 
-<!-- Notez bien la syntaxe :  -->
+<!-- Notez bien la syntaxe : -->
 
 <!-- - Nous utilisons ici la syntaxe du type "formule" faisant appel au symbole "`~`" (Longueur des cornes en fonction de la Survie) et à l'argument "`data = `". -->
 <!-- - L'argument "`paired = TRUE`" a disparu puisque nous avons ici deux échantillons indépendants -->
@@ -261,7 +297,7 @@ En cours...
 
 <!-- - H$_1$ : la valeur d'un paramètre de la population **est supérieure à** $k$. -->
 
-<!-- ou par :  -->
+<!-- ou par : -->
 
 <!-- - H$_1$ : la valeur d'un paramètre de la population **est inférieure à** $k$. -->
 
@@ -296,7 +332,7 @@ En cours...
 <!-- Ce test est donc rigoureusement équivalent à celui-ci : -->
 
 <!-- ```{r} -->
-<!-- t.test(Horn_len ~ Survival,  -->
+<!-- t.test(Horn_len ~ Survival, -->
 <!--        data = Lizard, var.equal = TRUE, -->
 <!--        alternative = "two.sided") -->
 <!-- ``` -->
@@ -307,14 +343,14 @@ En cours...
 <!-- - H$_1$ : la moyenne de longueur des cornes de la population des lézards morts est **inférieure** à celle des lézards vivants. Leur différence est inférieure à 0 ($\mu_{killed}-\mu_{living} < 0$). -->
 
 <!-- ```{r} -->
-<!-- t.test(Horn_len ~ Survival,  -->
+<!-- t.test(Horn_len ~ Survival, -->
 <!--        data = Lizard, var.equal = TRUE, -->
 <!--        alternative = "less") -->
 <!-- ``` -->
 
 <!-- Puisque la $p$-value de ce test est inferieure à $\alpha = 0.05$, on rejette l'hypothèse nulle de l'égalité des moyennes. On valide donc l'hypothèse alternative : les lézards cornus morts ont en moyenne des cornes plus courtes que les lézards vivants. Cette différence de longueur de cornes est en faveur des lézards vivants et vaut très probablement au moins $1.4$ millimètres (c'est l'intervalle de confiance à 95% de la différence de moyennes qui nous le dit). -->
 
-<!-- Dernière chose importante : il ne faut pas se tromper dans le choix de l'hypothèse alternative. En effet, nous aurions pu tenter de tester exactement la même chose en formulant les hypothèses suivantes :  -->
+<!-- Dernière chose importante : il ne faut pas se tromper dans le choix de l'hypothèse alternative. En effet, nous aurions pu tenter de tester exactement la même chose en formulant les hypothèses suivantes : -->
 
 <!-- - H$_0$ : la moyenne de longueur des cornes de la population des lézards **vivants** est égale à celle des lézards **morts**. Leur différence vaut 0 ($\mu_{living}-\mu_{killed} = 0$). -->
 <!-- - H$_1$ : la moyenne de longueur des cornes de la population des lézards **vivants** est **supérieure** à celle des lézards **morts**. Leur différence est **supérieure** à 0 ($\mu_{living}-\mu_{killed} > 0$). -->
@@ -322,12 +358,12 @@ En cours...
 <!-- Ce test est normalement exactement le même que précédemment. Toutefois, si on essaie de le réaliser, on rencontre un problème : -->
 
 <!-- ```{r} -->
-<!-- t.test(Horn_len ~ Survival,  -->
+<!-- t.test(Horn_len ~ Survival, -->
 <!--        data = Lizard, var.equal = TRUE, -->
 <!--        alternative = "greater") -->
 <!-- ``` -->
 
-<!-- Ici, la $p$-value est très supérieure à $\alpha$ puisqu'elle vaut 1. Une $p$-value de 1 devrait toujours attirer votre attention. La conclusion devrait donc être que l'on ne peut pas rejeter H$_0$ : les lézards morts et vivants ont en moyenne des cornes de même longueur. Nous savons pourtant que c'est faux.  -->
+<!-- Ici, la $p$-value est très supérieure à $\alpha$ puisqu'elle vaut 1. Une $p$-value de 1 devrait toujours attirer votre attention. La conclusion devrait donc être que l'on ne peut pas rejeter H$_0$ : les lézards morts et vivants ont en moyenne des cornes de même longueur. Nous savons pourtant que c'est faux. -->
 
 <!-- Le problème est ici liè à l'ordre des catégories "vivant" ou "mort" dans le facteur `Survival` du tableau `Lizard`. Les dernières lignes des tests que nous venons de faire indiquent la moyenne de chaque groupe, mais le groupe "killed" apparaît toujours avant le groupe "living". C'est l'ordre des niveaux dans le facteur `Survival` qui doit dicter la syntaxe appropriée : -->
 
@@ -338,7 +374,7 @@ En cours...
 <!-- Par défaut, dans R, les niveaux d'un facteur sont classés par ordre alphabétique sauf si on spécifie manuellement un ordre différent. Ici, le niveau "killed" est donc le premier niveau du facteur, et "living" le second. Lorsque l'on réalise un test de Student avec ces données (ou un test de Wilcoxon d'ailleurs), la différence de moyenne qui est examinée par le test est donc "moyenne des `killed` - moyenne des `living`". Lorsque nous avons tapé ceci : -->
 
 <!-- ```{r, eval = FALSE} -->
-<!-- t.test(Horn_len ~ Survival,  -->
+<!-- t.test(Horn_len ~ Survival, -->
 <!--        data = Lizard, var.equal = TRUE, -->
 <!--        alternative = "greater") -->
 <!-- ``` -->
@@ -348,10 +384,10 @@ En cours...
 <!-- - H$_0$ : la moyenne de longueur des cornes de la population des lézards **morts** est égale à celle des lézards **vivants**. Leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$). -->
 <!-- - H$_1$ : la moyenne de longueur des cornes de la population des lézards **morts** est **supérieure** à celle des lézards **vivants**. Leur différence est **supérieure** à 0 ($\mu_{killed}-\mu_{living} > 0$). -->
 
-<!-- Ce test est donc erronné, ce qui explique qu'il nous renvoie un résultat faux et une $p$-value de 1. Ici, puisque l'ordre des catégories est "killed" d'abord et "living" ensuite, la seule façon correcte de faire un test unilatéral qui a du sens est donc celle que nous avons réalisée en premier :  -->
+<!-- Ce test est donc erronné, ce qui explique qu'il nous renvoie un résultat faux et une $p$-value de 1. Ici, puisque l'ordre des catégories est "killed" d'abord et "living" ensuite, la seule façon correcte de faire un test unilatéral qui a du sens est donc celle que nous avons réalisée en premier : -->
 
 <!-- ```{r, eval = FALSE} -->
-<!-- t.test(Horn_len ~ Survival,  -->
+<!-- t.test(Horn_len ~ Survival, -->
 <!--        data = Lizard, var.equal = TRUE, -->
 <!--        alternative = "less") -->
 <!-- ``` -->
