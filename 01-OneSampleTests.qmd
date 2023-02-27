@@ -522,7 +522,7 @@ Si jamais les conditions d'application du test de Student à un échantillon n'�
 ```{r}
 #| eval: false
 
-wilcox.test(Temp_clean$temperature, mu = 37)
+wilcox.test(Temp_clean$temperature, mu = 37, conf.int = TRUE)
 ```
 
 ou
@@ -530,7 +530,7 @@ ou
 ```{r}
 #| eval: false
 
-wilcox.test(temperature ~ 1, mu = 37, data = Temp_clean)
+wilcox.test(temperature ~ 1, mu = 37, conf.int = TRUE, data = Temp_clean)
 ```
 
 ou encore
