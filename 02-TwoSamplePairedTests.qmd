@@ -10,7 +10,7 @@ editor_options:
 
 Pour ce nouveau chapitre, je vous conseille de travailler dans un nouveau script que vous placerez dans votre répertoire de travail, et dans une nouvelle session de travail (Menu `Session > Restart R`). Inutile en revanche de créer un nouveau `Rproject` : vos pouvez tout à fait avoir plusieurs script dans le même répertoire de travail et pour un même `Rproject`. Comme toujours, consultez [le livre en ligne du semestre 3](https://besibo.github.io/BiometrieS3/01-R-basics.html#sec-code) si vous ne savez plus comment faire.
 
-Si vous êtes dans une nouvelle session de travail (ou que vous avez quitté puis relancé `RStudio`), vous devrez penser à re-charger en mémoire les packages utiles. Dans ce chapitre, vous aurez besoin d'utiliser des mêmes packages que précédemment :
+Si vous êtes dans une nouvelle session de travail (ou que vous avez quitté puis relancé `RStudio`), vous devrez penser à recharger en mémoire les packages utiles. Dans ce chapitre, vous aurez besoin d'utiliser les mêmes packages que précédemment :
 
 - le `tidyverse` [@R-tidyverse], qui comprend notamment le package `readr` [@R-readr], pour importer facilement des fichiers `.csv` au format `tibble`, le package `dplyr` [@R-dplyr], pour manipuler des tableaux, et le package `ggplot2` [@R-ggplot2] pour les représentations graphiques.
 <!-- - `readxl` [@R-readxl], pour importer facilement des fichiers Excel au format `tibble`. -->
@@ -57,6 +57,8 @@ Voici quelques exemples de situations qui devraient être traitées avec des tes
 Les 2 derniers exemples montrent que même des individus séparés peuvent constituer une  "paire statistique" s'ils partagent un certain nombre de caractéristiques (physiques, environnementales, génétiques, comportementales, etc.) pertinentes pour l'étude.
 
 Ici, nous allons nous intéresser au lien qui pourrait exister entre la production de testostérone et l'immunité chez une espèce d'oiseau vivant en Amérique du Nord, [le carouge à épaulettes](https://fr.wikipedia.org/wiki/Carouge_à_épaulettes).
+
+![Le carouge à épaulettes](images/Blackbirds.png){width=50% fig-align="center"}
 
 Chez de nombreuses espèces, les mâles ont plus de chances d'attirer des femelles s'ils produisent des niveaux de testostérone élevés. Est-ce que la forte production de testostérone de certains mâles a un coût, notamment en terme d'immunocompétence ? Autrement dit, est-ce que produire beaucoup de testostérone au moment de la reproduction (ce qui fournit un avantage sélectif) se traduit par une immunité plus faible par la suite, et donc une plus forte susceptibilité de contracter des maladies (ce qui constitue donc un désavantage sélectif) ? Ce type de question est central pour comprendre comment l'allocation des ressources affecte à la fois la survie et la fécondité des individus.
 
@@ -165,7 +167,7 @@ D'une façon générale, nous disposons :
 
 Tous les graphiques présentés dans [le chapitre consacré à cette situation précise](https://besibo.github.io/BiometrieS3/03-visualization.html#une-variable-de-chaque-type) dans le livre en ligne de biométrie du semestre  3, peuvent être réalisés. N'hésitez pas à le relire, en particulier la section expliquant comment faire apparaître et interpréter les encoches d'incertitudes sur des boiites à moustaches.
 
-1. Visualiser les données brutes avec un **stripchart** :
+### Avec un stripchart
 
 ```{r, fig.asp = 1.5, out.width = '25%', fig.width = 2}
 #| fig-asp: 1.5
@@ -181,13 +183,13 @@ Testo_long %>%
        subtitle = "n = 13 carouges à épaulettes")
 ```
 
-2. Visualiser les données brutes avec des **histogrammes facettés** :
+### Avec des histogrammes facettés
 
 Nous allons faire un histogramme pour chaque série de données en utilisant des facettes :
 ```{r}
 Testo_long %>%
   ggplot(aes(x = DO)) +
-  geom_histogram(bins = 10, color = grey(0.8))+
+  geom_histogram(bins = 10, fill = "firebrick2", color = "grey20", alpha = 0.5)+
   geom_rug() +
   facet_wrap(~Moment, ncol = 1) +
   labs(x = "immunocompétence (log DO / minute)",
@@ -196,7 +198,7 @@ Testo_long %>%
        subtitle = "n = 13 carouges à épaulettes")
 ```
 
-3. Visualiser les données brutes avec des **diagrammes de densité facettés** :
+### Avec des diagrammes de densité facettés
 
 ```{r}
 Testo_long %>%
@@ -210,7 +212,7 @@ Testo_long %>%
        subtitle = "n = 13 carouges à épaulettes")
 ```
 
-4. Visualiser les données brutes avec des **boîtes à moustaches** :
+### Avec des boîtes à moustaches
 
 ```{r}
 #| fig-asp: 1.5
@@ -228,6 +230,8 @@ Testo_long %>%
 ```
 
 Du point de vue de la **position** des données, ces différents graphiques montrent tous que la seconde série de données (catégorie `After` : après l'opération chirurgicale) présente en moyenne des valeurs très légèrement plus élevées que la première (catégorie `Before` avant l'opération). En terme de **dispersion**, si l'on met de côté la valeur minimale de la série `Before` qui semble atypique (un individu outlier qui présente une immunocompétence très faible avant l'opération), la dispersion des données autour de la tendance centrale semble globalement plus importante pour la série `After`.  Enfin, pour ce qui concerne l'**incertitude**, les intervalles de confiance à 95% des médianes (qui apparaissent sous la forme d'encoches sur les boîtes à moustaches) se chevauche assez largement, ce qui nous permet d'anticiper les résultats des tests que nous ferons ensuite : puisque les encoches se chevauchent, il y a fort à parier que le test de comparaison de moyenne ne montrera aucune différence significative. On note également que l'encoche de la série `After` est particulièrement large : la limite supérieure de l'intervalle de confiance à 95% de la médiane est supérieure à la valeur maximale observée dans l'échantillon. Cela traduit le fait que compte de la grande variabilité des données dans cette série, un échantillon de taille n = 13 n'est probablement pas suffisant pour avoir une estimation précise de la médiane.
+
+### Avec un nuage de points appariés
 
 Toutes ces représentations graphiques sont certes utiles, mais elles masquent un élément crucial : ce sont les mêmes individus qui sont étudiés avant et après l'opération. Il s'agit de données appariées ! Les graphiques que nous avons faits jusque là ne permettent pas de visualiser ce lien entre les deux séries de données. Pour avoir une bonne vision de ce qui se passe, il nous faut faire apparaître ce lien entre les 2 séries de données :
 
