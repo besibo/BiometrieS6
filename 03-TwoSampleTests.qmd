@@ -170,7 +170,7 @@ Lizard %>%
 
 Ce premier graphique permet de visualiser très clairement les différences de tailles d'échantillons entre les deux groupes. Il permet également de voir que l'étendue des longueurs de cornes est plus importante dans le groupe des individus vivants que dans celui des individus morts. En outre, le nuage de points des vivants semble être plus haut sur l'axe des `y` que celui des morts, confirmant les statistiques descriptives qui montraient des tailles de cornes en moyenne plus importantes dans le groupe des vivants.
 
-### Avec des histogrammes facettés
+### Avec des histogrammes facettés {#sec-histofacet}
 
 ```{r}
 Lizard %>%
@@ -188,7 +188,7 @@ Notez ici l'utilisation de l'argument `scales = "free_y"` dans la fonction `face
 
 Cette visualisation nous montre que les données doivent suivre à peu près une distribution Normale dans les 2 groupes, et que globalement la longueur des cornes semble légèrement plus élevée dans le groupe des vivants (avec un mode autour de 25-26 mm) que dans le groupes des morts (avec un mode autour de 23-24 mm). L'étendue des données semble légèrement plus grande dans le groupe des vivants, mais cela n'est peut-être dû qu'à la différence marquée des tailles d'échantillons.
 
-### Avec des diagrammes de densité facettés
+### Avec des diagrammes de densité facettés {#sec-densfacet}
 
 ```{r}
 Lizard %>%
@@ -246,263 +246,354 @@ Lizard %>%
   scale_fill_manual(values = c("purple3", "royalblue2"))
 ```
 
-<!-- ### Le test paramétrique -->
+## Le test paramétrique
 
-<!-- Le test paramétrique le plus puissant que nous puissions faire pour comparer la moyenne de 2 populations est le test de Student. Ce test étant paramétrique, nous devons nous assurer que ses conditions d'application sont vérifiées avant de pouvoir le réaliser. -->
+Le test paramétrique le plus puissant que nous puissions faire pour comparer la moyenne de 2 populations est le test de Student. Ce test étant paramétrique, nous devons nous assurer que ses conditions d'application sont vérifiées avant de pouvoir le réaliser.
 
-<!-- #### Conditions d'application -->
+### Conditions d'application
 
-<!-- Les conditions d'application de ce test sont au nombre de 3 : -->
+Les conditions d'application de ce test sont au nombre de 3 :
 
-<!-- 1. Chacun des deux échantillons est issu d'un échantillonnage aléatoire de la population générale. Comme toujours, en l'absence d'indication contraire, on considère que cette condition est toujours vérifiée. -->
-<!-- 2. La variable numérique étudiée est distribuée normalement dans les deux populations. Il nous faudra donc faire deux test de Shapiro-Wilk, un pour chaque échantillon. -->
-<!-- 3. L'écart-type (et la variance) de la variable numérique est la même dans les deux populations. C'est ce que l'on appelle l'homoscédasticité. -->
+1. Chacun des deux échantillons est issu d'un échantillonnage aléatoire de la population générale. Comme toujours, en l'absence d'indication contraire, on considère que cette condition est toujours vérifiée.
+2. La variable numérique étudiée est distribuée normalement dans les deux populations. Il nous faudra donc faire deux tests de Shapiro-Wilk, un pour chaque échantillon.
+3. La variance de la variable numérique étudiée est la même dans les deux populations. C'est ce que l'on appelle l'homoscédasticité.
 
-<!-- En réalité, le test du $t$ de Student sur deux échantillons indépendants est assez robuste face au non respect de cette troisième condition d'application. Cela signifie que si cette troisième condition d'application n'est pas strictement vérifiée, les résultats du tests peuvent malgré tout rester valides. Lorsque les 2 échantillons comparés ont des tailles supérieures ou égales à 30, ce test fonctionne bien même si l'écart-type d'un groupe est jusqu'à 3 fois supérieur ou inférieur à l'écart-type du second groupe, à condition que la taille des 2 échantillons soit proche (ce qui n'est pas le cas ici !). En revanche, si les écart-types diffèrent de plus d'un facteur 3, ou si les tailles d'échantillons sont très différentes, le test du $t$ de Student ne devrait pas être utilisé. De même, si la taille des échantillons est inférieure à 30 et que les variances ne sont pas homogènes, ce test ne devrait pas être réalisé. En conclusion, les résultats du test du $t$ de Student à deux échantillons indépendants peuvent rester valides si la troisième condition d'homoscédasticité est violée, mais dans certains cas seulement. -->
+En réalité, le test du $t$ de Student sur deux échantillons indépendants est assez robuste face au non respect de cette troisième condition d'application. Cela signifie que si cette troisième condition d'application n'est pas strictement vérifiée, les résultats du tests peuvent malgré tout rester valides. Lorsque les 2 échantillons comparés ont des tailles supérieures ou égales à 30, ce test fonctionne bien même si l'écart-type d'un groupe est jusqu'à 3 fois supérieur ou inférieur à l'écart-type du second groupe, à condition que la taille des 2 échantillons soit proche (ce qui n'est pas le cas ici !). En revanche, si les écart-types diffèrent de plus d'un facteur 3, ou si les tailles d'échantillons sont très différentes, le test du $t$ de Student ne devrait pas être utilisé. De même, si la taille des échantillons est inférieure à 30 et que les variances ne sont pas homogènes, ce test ne devrait pas être réalisé. En conclusion, les résultats du test du $t$ de Student à deux échantillons indépendants peuvent rester valides si la troisième condition d'homoscédasticité n'est pas respectée, mais dans certains cas seulement.
 
-<!-- Le test du $t$ de Student sur deux échantillons indépendants est également assez robuste face à des écarts mineurs à la distribution Normale, tant que la forme des deux distributions comparées reste similaire. En outre, la robustesse de ce test augmente avec la taille des échantillons. -->
+Le test du $t$ de Student sur deux échantillons indépendants est également assez robuste face à des écarts mineurs à la distribution Normale, tant que la forme des deux distributions comparées reste similaire et unimodale. En outre, la robustesse de ce test augmente avec la taille des échantillons.
 
-<!-- Ici, nous allons donc commencer par vérifier la normalité de chacun des 2 échantillons en réalisant 2 tests de Shapiro-Wilk. Si ces tests confirment que la taille des cornes suit une distribution Normale dans la population générale, nous comparerons alors la variance des 2 populations (nous verrons 3 méthodes pour cela). Les statistiques descriptives réalisées plus haut nous ont montré que les écarts-types des 2 échantillons sont proches, mais que les tailles d'échantillons sont très différentes. L'homoscédasticité doit donc être vérifiée pour que nous ayons le droit de faire le test de Student. -->
+:::{.callout-tip}
+## Robustesse
 
+La robustesse d'un tests statistique est sa capacité à rester valide même lorsque certaines de ses conditions d'application ne sont pas parfaitement respectées. Plus un test est robuste, plus il est capable de supporter des "entorses" importantes à ses conditions d'application.}
+:::
 
-<!-- **1. Normalité des données** -->
+Au final, avec un peu d'habitude, même lorsque les conditions d'application ne sont pas toutes vérifiées, on peut parfois passer outre. Mais à ce stade, on préfère s'en tenir à des choses plus simples et claires. 
 
-<!-- Nous commençons donc par tester la Normalité des 2 populations dont sont issus les échantillons. Pour les individus morts, les hypothèses sont les suivantes : -->
+:::{.callout-warning}
+## La procédure à suivre
 
-<!-- - H$_0$ : la taille des cornes suit une distribution Normale dans la population des lézards cornus morts. -->
-<!-- - H$_1$ : la taille des cornes ne suit pas une distribution Normale dans la population des lézards cornus morts. -->
+1. Faites un test de Normalité pour chacune des deux séries de données. Si elles suivent la loi Normale toutes les deux, passez au point 2. Sinon, rendez-vous au point 4.
+2. Faites un test d'homoscédasticité (homogénéité des variances). Si les variances sont homogènes, passez au point 3. Sinon,rendez-vous au point 5.
+3. Faite un test de comparaison des moyennes paramétrique : le test de Student. Examinez la $p-$value pour conclure, et rendez-vous au point 6.
+4. Faite un test de comparaison des moyennes non paramétrique : le test de Wilcoxon de la somme des rangs. Examinez la $p-$value pour conclure, et rendez-vous au point 6.
+5. Faite un test de comparaison des moyennes non paramétrique : le test $t$ de Welch. Examinez la $p-$value pour conclure, et rendez-vous au point 6.
+6. Si la $p-$value est supérieure à $\alpha$, on ne peut pas rejeter l'hypothèse nulle et on conclut alors à une absence de différence significative entre les 2 populations. À l'inverse, si la $p-$value est inférieure ou égale à $\alpha$, on rejette l'hypothèse nulle et on valide l'hypothèse alternative. Les deux populations ont des moyennes significativement différentes, et pour savoir laquelle est supérieure ou inférieure à l'autre, on revient aux estimations des moyennes et des intervalles de confiances à 95%, calculés dans la partie consacrée aux statistiques descriptives.
+:::
 
-<!-- ```{r} -->
-<!-- Lizard %>% -->
-<!--   filter(Survival == "killed") %>% -->
-<!--   pull(Horn_len) %>% -->
-<!--   shapiro.test() -->
-<!-- ``` -->
 
-<!-- > La $p$-value est supérieure à $\alpha = 0.05$, donc on ne peut pas rejeter l'hypothèse nulle de normalité pour la taille des cornes de la population des lézards cornus morts (test de Shapiro-Wilk, $W = 0.93$, $p = 0.065$). -->
+#### Normalité des données
 
-<!-- Pour les individus vivants : -->
+Nous commençons donc par tester la Normalité des 2 populations dont sont issus les échantillons, c'est le point 1 de la procédure détaillée ci-dessus. Pour les individus morts, les hypothèses sont les suivantes :
 
-<!-- - H$_0$ : la taille des cornes suit une distribution Normale dans la population des lézards cornus vivants. -->
-<!-- - H$_1$ : la taille des cornes ne suit pas une distribution Normale dans la population des lézards cornus vivants. -->
+- H$_0$ : la taille des cornes suit une distribution Normale dans la population des lézards cornus morts.
+- H$_1$ : la taille des cornes ne suit pas une distribution Normale dans la population des lézards cornus morts.
 
-<!-- ```{r} -->
-<!-- Lizard %>% -->
-<!--   filter(Survival == "living") %>% -->
-<!--   pull(Horn_len) %>% -->
-<!--   shapiro.test() -->
-<!-- ``` -->
+```{r}
+Lizard %>%
+  filter(Survival == "killed") %>%
+  pull(Horn_len) %>%
+  shapiro.test()
+```
 
-<!-- > La $p$-value est inférieure à $\alpha = 0.05$, donc on rejette l'hypothèse nulle de normalité pour la taille des cornes de la population des lézards cornus vivants (test de Shapiro-Wilk, $W = 0.96$, $p < 0.001$). -->
+> La $p$-value est supérieure à $\alpha = 0.05$, donc on ne peut pas rejeter l'hypothèse nulle de normalité pour la taille des cornes de la population des lézards cornus morts (test de Shapiro-Wilk, $W = 0.93$, $p = 0.065$).
 
-<!-- Si l'on examine l'histogramme des 2 échantillons, on constate toutefois que la forme des distributions des 2 séries de données est très proche. Pour les 2 échantillons, la distribution est en effet uni-modale, avec une asymétrie gauche assez marquée (une longue queue de distribution du côté gauche). La forme des distributions étant similaire (on parle bien de la forme des histogrammes et non de la position du pic), et les histogrammes étant proches de la forme typique d'une courbe en cloche, le test de Student devrait rester valide. En toute rigueur, il faudrait cependant préférer son alternative non paramétrique. -->
+Pour les individus vivants :
 
-<!-- **2. Homogénéité des variances** -->
+- H$_0$ : la taille des cornes suit une distribution Normale dans la population des lézards cornus vivants.
+- H$_1$ : la taille des cornes ne suit pas une distribution Normale dans la population des lézards cornus vivants.
 
-<!-- Le test le plus simple pour comparer la variance de 2 populations est le test $F$ : -->
+```{r}
+Lizard %>%
+  filter(Survival == "living") %>%
+  pull(Horn_len) %>%
+  shapiro.test()
+```
 
-<!-- - H$_0$ : la variance des 2 populations est égale, leur ratio vaut 1 $\left(\frac{\sigma^2_{killed}}{\sigma^2_{living}} = 1\right)$. -->
-<!-- - H$_1$ : la variance des 2 populations est différente, leur ratio ne vaut pas 1 $\left(\frac{\sigma^2_{killed}}{\sigma^2_{living}} \neq 1\right)$. -->
+> La $p$-value est inférieure à $\alpha = 0.05$, donc on rejette l'hypothèse nulle de normalité pour la taille des cornes de la population des lézards cornus vivants (test de Shapiro-Wilk, $W = 0.96$, $p < 0.001$).
 
-<!-- ```{r} -->
-<!-- var.test(Horn_len ~ Survival, data = Lizard) -->
-<!-- ``` -->
+L'une des 2 séries de données ne suit pas la loi Normale, nous sommes donc censés passer directement au point 4 de la procédure.
 
-<!-- > Ici, le ratio des variances (la variance des individus morts divisée par la variance des individus vivants) est très proche de 1 ($F = 1.06$, IC 95% : [0.63 ; 1.98]). Le test $F$ nous montre qu'il est impossible de rejeter H$_0$ : au seuil $\alpha = 0.05$, le ratio des variances n'est pas significativement différent de 1 (ddl = 29 et 153, $p = 0.79$), les variances sont homogènes. -->
+Toutefois, si l'on examine les histogrammes (@sec-histofacet) ou les diagrammes de densité (@sec-densfacet) des 2 échantillons, on constate que la forme des distributions des 2 séries de données est très proche. Pour les 2 échantillons, la distribution est en effet uni-modale, avec une asymétrie gauche assez marquée (une longue queue de distribution du côté gauche). La forme des distributions étant similaire (on parle bien de la forme des histogrammes et non de la position du pic), et les histogrammes étant proches de la forme typique d'une courbe en cloche, le test de Student devrait rester valide car il est robuste dans cette situation. Ici, pour l'exemple, on va donc passer au point 2 de la procédure. Notez toutefois que passer directement au point 4 de la procédure serait tout à fait correct : on ne pourrait rien vous reprocher si vous passez directement au test non paramétrique de comparaison des moyennes lorsque vous constatez que l'une des 2 séries de données ne suit pas la distribution Normale.
 
-<!-- Le test de Bartlett est un autre test qui permet de comparer la variance de plusieurs populations (2 ou plus). Lorsque le nombre de populations est égal à 2 (comme ici), ce test est absolument équivalent au test $F$ ci-dessus. -->
+#### Homogénéité des variances
 
-<!-- - H$_0$ : toutes les populations ont même variance ($\sigma^2_A = \sigma^2_B = \sigma^2_C = \cdots = \sigma^2_N$). -->
-<!-- - H$_1$ : au moins une population a une variance différente des autres. -->
+Le test le plus simple pour comparer la variance de 2 populations est le test $F$ :
 
-<!-- ```{r} -->
-<!-- bartlett.test(Horn_len ~ Survival, data = Lizard) -->
-<!-- ``` -->
+- H$_0$ : la variance des 2 populations est égale, leur ratio vaut 1 $\left(\frac{\sigma^2_{killed}}{\sigma^2_{living}} = 1\right)$.
+- H$_1$ : la variance des 2 populations est différente, leur ratio ne vaut pas 1 $\left(\frac{\sigma^2_{killed}}{\sigma^2_{living}} \neq 1\right)$.
 
-<!-- Enfin, le test de Levene devrait être préféré la plupart du temps. Comme le test de Bartlett, il permet de comparer la variance de plusieurs populations, mais il est plus robuste vis à vis de la non-normalité des données. -->
+```{r}
+var.test(Horn_len ~ Survival, data = Lizard)
+```
 
-<!-- - H$_0$ : toutes les populations ont même variance ($\sigma^2_A = \sigma^2_B = \sigma^2_C = \cdots = \sigma^2_N$). -->
-<!-- - H$_1$ : au moins une population a une variance différente des autres. -->
+> Ici, le ratio des variances (la variance des individus morts divisée par la variance des individus vivants) est très proche de 1 ($F = 1.06$, IC 95% : [0.63 ; 1.98]). Le test $F$ nous montre qu'il est impossible de rejeter H$_0$ : au seuil $\alpha = 0.05$, le ratio des variances n'est pas significativement différent de 1 (ddl = 29 et 153, $p = 0.79$), les variances sont homogènes.
 
-<!-- ```{r} -->
-<!-- # Le test de Levene fait partie du package car. Il doit être chargé en mémoire -->
-<!-- # library(car) -->
-<!-- leveneTest(Horn_len ~ Survival, data = Lizard) -->
-<!-- ``` -->
+Le test de Bartlett est un autre test qui permet de comparer la variance de plusieurs populations (2 ou plus). Lorsque le nombre de populations est égal à 2 (comme ici), ce test est absolument équivalent au test $F$ ci-dessus.
 
-<!-- Ici encore, les conclusions sont les mêmes : -->
+- H$_0$ : toutes les populations ont même variance ($\sigma^2_A = \sigma^2_B = \sigma^2_C = \cdots = \sigma^2_N$).
+- H$_1$ : au moins une population a une variance différente des autres.
 
-<!-- > Il est impossible de rejeter l'hypothèse nulle d'homogénéité des variances au seuil $\alpha = 0.05$ (test de Levene, $F$ = 0.004, ddl = 1, $p = 0.953$). -->
+```{r}
+bartlett.test(Horn_len ~ Survival, data = Lizard)
+```
 
-<!-- #### Réalisation du test et interprétation -->
+Enfin, le test de Levene (attention, le package `car` doit être chargé) devrait être préféré la plupart du temps. Comme le test de Bartlett, il permet de comparer la variance de plusieurs populations, mais il est plus robuste vis à vis de la non-normalité des données.
 
-<!-- Puisque la taille des cornes du lézard cornu suit approximativement la même distribution "presque Normale" dans les 2 populations (lézards morts et vivants) et que ces 2 populations ont des variances homogènes, on peut réaliser le test du $t$ de Student sur deux échantillons indépendants. -->
+- H$_0$ : toutes les populations ont même variance ($\sigma^2_A = \sigma^2_B = \sigma^2_C = \cdots = \sigma^2_N$).
+- H$_1$ : au moins une population a une variance différente des autres.
 
-<!-- - H$_0$ : la moyenne des 2 populations est égale, leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$). -->
-<!-- - H$_1$ : la moyenne des 2 populations est différente, leur différence ne vaut pas 0 ($\mu_{killed}-\mu_{living} \neq 0$). -->
+```{r}
+# Le test de Levene fait partie du package car. Il doit être chargé en mémoire
+# library(car)
+leveneTest(Horn_len ~ Survival, data = Lizard)
+```
 
-<!-- ```{r} -->
-<!-- t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE) -->
-<!-- ``` -->
+Ici encore, les conclusions sont les mêmes :
 
-<!-- Notez bien la syntaxe : -->
+> Il est impossible de rejeter l'hypothèse nulle d'homogénéité des variances au seuil $\alpha = 0.05$ (test de Levene, $F$ = 0.004, ddl = 1, $p = 0.953$).
 
-<!-- - Nous utilisons ici la syntaxe du type "formule" faisant appel au symbole "`~`" (Longueur des cornes en fonction de la Survie) et à l'argument "`data = `". -->
-<!-- - L'argument "`paired = TRUE`" a disparu puisque nous avons ici deux échantillons indépendants -->
-<!-- - L'argument "`var.equal = TRUE`" doit obligatoirement être spécifié : nous nous sommes assuré que l'homogénéité des variances était vérifiée. Il faut donc l'indiquer à R afin que le test de Student classique soit réalisé. Si on omet de le spécifier, c'est un autre test qui est réalisé (voir plus bas). -->
+À vous de choisir lequel de ces 3 tests vous souhaitez réaliser : il est évident qu'on ne fait jamais les 3 !
 
-<!-- > Au seuil $\alpha$ de 5%, on rejette l'hypothèse nulle d'égalité des moyennes de la longueur des cornes entre lézards vivants et morts (test $t$ de Student sur deux échantillons indépendant, $t = -4.35$, ddl = 182, $p < 0.001$). Les lézards morts ont en moyenne des cornes plus courtes ($\hat{\mu}_{killed} = 21.99$ millimètres) que les lézards vivants ($\hat{\mu}_{living} = 24.28$ millimètres). La gamme des valeurs les plus probables pour la différence de moyenne entre les deux populations est fournie par l'intervalle de confiance à 95% de la différence de moyennes : [-3.34 ; -1.25]. -->
+Ici, puisque l'homoscédasticité est vérifiée, on passe au point 3 de la procédure.
 
-<!-- Ce test confirme donc bien l'impression des chercheurs : les lézards principalement pris pour cibles par les pies grièches migratrices ont des cornes en moyenne plus courtes (probablement entre 1.25 et 3.34 millimètres de moins) que les lézards de la population générale. Avoir des cornes plus longues semble donc protéger les lézards de la prédation, du moins dans une certaine mesure. -->
 
-<!-- ### L'alternative non paramétrique -->
+### Réalisation du test et interprétation
 
-<!-- Si les conditions d'application du test de Student ne sont pas vérifiées, nous devons utiliser un équivalent non paramétrique. C'est le cas du **test de Wilcoxon sur la somme des rangs** (également appelé test de Mann-Whitney). Comme pour tous les tests de Wilcoxon, la comparaison porte alors non plus sur les moyennes mais sur les médianes. -->
+Puisque la taille des cornes du lézard cornu suit approximativement la même distribution "presque Normale" dans les 2 populations (lézards morts et vivants) et que ces 2 populations ont des variances homogènes, on peut réaliser le test du $t$ de Student sur deux échantillons indépendants.
 
-<!-- - H$_0$ : la médiane des 2 populations est égale, leur différence vaut 0 ($med_{killed}-med_{living} = 0$). -->
-<!-- - H$_1$ : la médiane des 2 populations est différente, leur différence ne vaut pas 0 ($med_{killed}-med_{living}\neq 0$). -->
+- H$_0$ : la moyenne des 2 populations est égale, leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$).
+- H$_1$ : la moyenne des 2 populations est différente, leur différence ne vaut pas 0 ($\mu_{killed}-\mu_{living} \neq 0$).
 
-<!-- ```{r} -->
-<!-- wilcox.test(Horn_len ~ Survival, data = Lizard, conf.int = TRUE) -->
-<!-- ``` -->
+```{r}
+t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE)
+```
 
-<!-- L'argument `var.equal = TRUE` n'existe pas pour ce test, puisque c'est justement un test non paramétrique qui ne requiert pas l'homogénéité des variances. En revanche, comme pour tous les autres tests de Wilcoxon que nous avons réalisés dans ce TP, l'argument `conf.int = TRUE` permet d'afficher les estimateurs pertinents, ici, la différence de médiane entre les 2 populations et l'intervalle de confiance à 95% de cette différence de médiane. -->
+Notez bien la syntaxe :
 
-<!-- La conclusion est ici la même que pour le test de Student : puisque la $p$-value est très inférieure à $\alpha$, on rejette l'hypothèse nulle : les médianes sont bel et bien différentes. -->
+- Nous utilisons ici la syntaxe du type "formule" faisant appel au symbole "`~`" (Longueur des cornes en fonction de la Survie) et à l'argument "`data = `".
+- L'argument "`paired = TRUE`" a disparu puisque nous avons ici deux échantillons indépendants
+- L'argument "`var.equal = TRUE`" doit obligatoirement être spécifié : nous nous sommes assuré que l'homogénéité des variances était vérifiée. Il faut donc l'indiquer afin que le test de Student classique soit réalisé. Si on omet de le spécifier, c'est un autre test qui est réalisé (voir plus bas).
 
+> Au seuil $\alpha$ de 5%, on rejette l'hypothèse nulle d'égalité des moyennes de la longueur des cornes entre lézards vivants et morts (test $t$ de Student sur deux échantillons indépendant, $t = -4.35$, ddl = 182, $p < 0.001$). Les lézards morts ont en moyenne des cornes plus courtes ($\hat{\mu}_{killed} = 21.99$ millimètres) que les lézards vivants ($\hat{\mu}_{living} = 24.28$ millimètres). La gamme des valeurs les plus probables pour la différence de moyenne entre les deux populations est fournie par l'intervalle de confiance à 95% de la différence de moyennes : [-3.34 ; -1.25].
 
-<!-- Enfin, dans le cas où la variable étudiée suit la loi Normale dans les deux populations mais qu'elle n'a pas la même variance dans les deux populations, il est toujours possible de réaliser un test de Wilcoxon, mais il est souvent préférable de réaliser un test de Student modifié : le **test approché du $t$ de Welch**. Ce test est moins puissant que le test de Student classique, mais il reste plus puissant que le test de Wilcoxon, et surtout, il permet de comparer les moyennes et non les médianes -->
+Ce test confirme donc bien l'impression des chercheurs : les lézards principalement pris pour cibles par les pies grièches migratrices ont des cornes en moyenne plus courtes (probablement entre 1.25 et 3.34 millimètres de moins) que les lézards de la population générale. Avoir des cornes plus longues semble donc protéger les lézards de la prédation, du moins dans une certaine mesure.
 
-<!-- - H$_0$ : la moyenne des 2 populations est égale, leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$). -->
-<!-- - H$_1$ : la moyenne des 2 populations est différente, leur différence ne vaut pas 0 ($\mu_{killed}-\mu_{living} \neq 0$). -->
+Notez bien que l'intervalle de confiance à 95% qui est fourni avec les résultats du test est l'intervalle de confiance à 95% de la différence de moyenne entre les 2 groupes. Cet intervalle nous donne donc une idée de la **magnitude de l'effet**, de son ampleur. En effet, dire que les lézards morts ont des cornes en moyenne plus courtes est intéressant, mais cela n'aura pas la même portée si leurs cornes sont plus courtes de 0.02 millimètres ou si elles sont plus courtes de 5 millimètres. Un test statistique permet de rejeter ou non une hypothèse nulle, mais c'est bien l'estimation (la moyenne de chaque groupe et l'intervalle de confiance à 95% de la différence) qui nous dit ce qu'on doit penser des résultats, et de leur pertinence (écologique, biologique, physiologie, comportementale, etc.).
 
-<!-- ```{r} -->
-<!-- t.test(Horn_len ~ Survival, data = Lizard) -->
-<!-- ``` -->
 
-<!-- La seule différence par rapport à la syntaxe du test $t$ de Student paramétrique est la suppression de l'argument `var.equal = TRUE`. Attention donc, à bien utiliser la syntaxe correcte. Le test du $t$ de Welch ne devrait être réalisé que lorsque la normalité est vérifiée pour les 2 populations, mais pas l'homoscédasticité. Par rapport au test de Student classique, on constate que le nombre de degrés de libertés est très différent, et donc la $p$-value également. Les bornes de l'intervalle de confiance à 95% de la différence de moyenne sont différentes également puisque leur calcul a été fait en supposant que les 2 populations n'avaient pas même variance. -->
+### L'alternative non paramétrique
 
-<!-- ### Exercice d'application -->
+Si les conditions d'application du test de Student ne sont pas vérifiées (c'est bien le cas ici puisque la longueur des cornes ne suit pas une distribution Normale dans la population des lézards vivants), notre procédure nous conduit à l'étape 4 : nous devons utiliser un équivalent non paramétrique au test de Student. C'est le cas du **test de Wilcoxon sur la somme des rangs** (également appelé test de Mann-Whitney). Comme pour tous les tests de Wilcoxon, la comparaison porte alors non plus sur les moyennes mais sur les médianes.
 
-<!-- On s'intéresse à la différence de taille supposée entre hommes et femmes. [Le fichier `HommesFemmes.xls`](data/HommesFemmes.xls) contient les tailles en centimètres de 38 hommes et 43 femmes choisis au hasard parmi les étudiants de première année à La Rochelle Université. Importez, mettez en forme et analysez ces données. Vous prendrez soin de retirer les éventuelles valeurs manquantes, vous prendrez le temps d'examiner les données à l'aide de statistiques descriptives et de représentations graphiques adaptées, puis vous tenterez de répondre à la question suivante : les hommes et les femmes inscrits en première année à La Rochelle Université ont-il la même taille ? Si non, caractérisez cette différence de taille. -->
+- H$_0$ : la médiane des 2 populations est égale, leur différence vaut 0 ($med_{killed}-med_{living} = 0$).
+- H$_1$ : la médiane des 2 populations est différente, leur différence ne vaut pas 0 ($med_{killed}-med_{living}\neq 0$).
 
+```{r}
+wilcox.test(Horn_len ~ Survival, data = Lizard, conf.int = TRUE)
+```
 
+L'argument `var.equal = TRUE` n'existe pas pour ce test, puisque c'est justement un test non paramétrique qui ne requiert pas l'homogénéité des variances. En revanche, comme pour tous les autres tests de Wilcoxon que nous avons réalisés jusqu'ici, l'argument `conf.int = TRUE` permet d'afficher les estimateurs pertinents, ici, la différence de médiane entre les 2 populations et l'intervalle de confiance à 95% de cette différence de médiane.
 
-<!-- ## Tests bilatéraux et unilatéraux -->
+La conclusion est ici la même que pour le test de Student : puisque la $p$-value est très inférieure à $\alpha$, on rejette l'hypothèse nulle : les médianes sont bel et bien différentes.
 
 
-<!-- ### Principe -->
+### L'autre alternative non paramétrique
 
-<!-- Jusqu'à maintenant, tous les tests que nous avons réalisés sont des tests bitaléraux. Pour chaque test, l'hypothèse nulle est imposée. En revanche, pour certains tests, l'hypothèse alternative est à choisir (et à spécifier) par l'utilisateur parmi 3 possibilités : -->
+Enfin, dans le cas où la variable étudiée suit la loi Normale dans les deux populations mais qu'elle n'a pas la même variance dans les deux populations (donc si vous arrivez au point 5 de la procédure décrite plus haut), il est toujours possible de réaliser un test de Wilcoxon, il est préférable de réaliser un test de Student modifié : le **test approché du $t$ de Welch**. Ce test est moins puissant que le test de Student classique, mais il reste plus puissant que le test de Wilcoxon, et surtout, il permet de comparer les moyennes et non les médianes.
 
-<!-- - Une hypothèse bilatérale. C'est celle qui est utilisée par défaut si l'utilisateur ne précise rien. -->
-<!-- - Deux hypothèses unilatérales possibles, qui doivent être spécifiées explicitement par l'utilisateur. -->
+- H$_0$ : la moyenne des 2 populations est égale, leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$).
+- H$_1$ : la moyenne des 2 populations est différente, leur différence ne vaut pas 0 ($\mu_{killed}-\mu_{living} \neq 0$).
 
-<!-- Les tests unilatéraux peuvent concerner tous les tests pour lesquels les hypothèses sont de la forme suivante : -->
+```{r}
+t.test(Horn_len ~ Survival, data = Lizard)
+```
 
-<!-- - H$_0$ : la valeur d'un paramètre de la population est égale à $k$ ($k$ peut être une valeur fixe, arbitraire, choisie par l'utilisateur, ou la valeur d'un paramètre d'une autre populations). -->
-<!-- - H$_1$ : la valeur d'un paramètre de la population **n'est pas égale à** $k$. -->
+La seule différence par rapport à la syntaxe du test $t$ de Student paramétrique est la suppression de l'argument `var.equal = TRUE`. Attention donc, à bien utiliser la syntaxe correcte. Le test du $t$ de Welch ne devrait être réalisé que lorsque la Normalité est vérifiée pour les 2 populations, mais pas l'homoscédasticité. Par rapport au test de Student classique, on constate que le nombre de degrés de libertés est très différent, et donc la $p$-value également. Les bornes de l'intervalle de confiance à 95% de la différence de moyenne sont différentes également puisque leur calcul a été fait en supposant que les 2 populations n'avaient pas même variance.
 
-<!-- En réalité, si nous remplaçons l'hypothèse H$_1$ par : -->
+## Exercices d'application
 
-<!-- - H$_1$ : la valeur d'un paramètre de la population **est supérieure à** $k$. -->
+### La taille des hommes et des femmes
 
-<!-- ou par : -->
+On s'intéresse à la différence de taille supposée entre hommes et femmes. [Le fichier `HommesFemmes.xls`](data/HommesFemmes.xls) contient les tailles en centimètres de 38 hommes et 43 femmes choisis au hasard parmi les étudiants de première année à La Rochelle Université. Importez, mettez en forme et analysez ces données. Vous prendrez soin de retirer les éventuelles valeurs manquantes, vous prendrez le temps d'examiner les données à l'aide de statistiques descriptives et de représentations graphiques adaptées, puis vous tenterez de répondre à la question suivante : les hommes et les femmes inscrits en première année à La Rochelle Université ont-il la même taille ? Si non, caractérisez cette différence de taille.
 
-<!-- - H$_1$ : la valeur d'un paramètre de la population **est inférieure à** $k$. -->
+### La longueur du bec des manchots Adélie
 
-<!-- nous réalisons un test unilatéral. -->
+Dans le jeu de données `penguins` du package `palmerpenguins`, récupérez les lignes du tableau qui correspondent aux manchots Adélie, et comparez la longueur des becs entre mâles et femelles. Comme toujours, avant de vous lancer dans les tests, vous prendrez soin de retirer les éventuelles valeurs manquantes, et vous prendrez le temps d'examiner les données à l'aide de statistiques descriptives et de représentations graphiques adaptées. Faites l'effort d'expliquer votre démarche, de préciser les hypothèses nulles et alternatives de chaque test, et de rédiger l'interprétation que vous faites de chaque résultat.
 
-<!-- Dans R, la syntaxe permettant de spécifier l'hypothèse alternative que nous souhaitons utiliser est toujours la même. Il faut préciser, au moment de faire le test l'argument suivant : -->
+```{r}
+#| include: false
 
-<!-- - `alternative = "two.sided"` : pour faire un test bilatéral. Si on ne le fait pas explicitement, c'est de toutes façons cette valeur qui est utilisée par défaut. -->
-<!-- - `alternative = "greater"` : pour choisir l'hypothèse unilatérale "`>`". -->
-<!-- - `alternative = "less"` : pour choisir l'hypothèse unilatérale "`<`". -->
+adel <- penguins %>% 
+  filter(species == "Adelie") %>% 
+  filter(!is.na(sex)) 
 
-<!-- Attention : le choix d'utiliser "greater" ou "less" dépend donc de l'ordre dans lequel les échantillons sont spécifiés. Cette synatxe est valable pour tous les tests de Student vus jusqu'ici (un échantillon, deux échantillons appariés, deux échantillons indépendants) et pour leurs alternatives non paramétriques (test de Wilcoxon des rangs signés, test de Wilcoxon de la somme des rangs, test du $t$ de Welch). -->
+adel %>% 
+  group_by(sex) %>% 
+  skim(bill_length_mm)
 
-<!-- **Attention** : comme indiqué en TD, l'utilisation de tests unilatéraux doit être réservée exclusivement aux situations pour lesquelles le choix de l'hypothèse unilatérale est possible à justifier par un mécanisme quelconque (biologique, physiologique, comportemental, écologique, génétique, évolutif, biochimique, etc.). Observer que l'un des échantillons a une moyenne plus grande ou plus faible qu'un autre lors de la phase des statistiques descriptives des données n'est pas du tout une raison suffisante. Il faut pouvoir justifier le choix de l'hypothèse alternative par une explication valable. Lorsqu'il est pertinent de réaliser un test unilatéral, on doit toujours le faire, car toutes choses étant égales par ailleurs, un test unilatéral est toujours plus puissant qu'un test bilatéral. -->
-<!-- Reprenons l'un des exemples examinés précédemment pour mieux comprendre comment tout cela fonctionne. -->
+adel %>% 
+  count(sex)
 
-<!-- ### Un exemple pas à pas -->
+adel %>% 
+  ggplot(aes(x = sex, y = bill_length_mm, fill = sex)) +
+  geom_boxplot(notch = TRUE, show.legend = FALSE, 
+               outlier.color = NA, alpha = 0.2) +
+  geom_jitter(width = 0.2, height = 0, shape = 21, show.legend = FALSE, 
+              alpha = 0.7) +
+  labs(x = "Sexe", y = "Longueur du bec (mm)",
+       title = "Longueur de bec chez les manchots Adélie",
+       subtitle = "nb femelles : 73, nb mâles : 73") +
+    scale_fill_brewer(palette = "Accent")
 
-<!-- Reprenons l'exemple des lézards cornus. L'étude a été réalisée parce que les chercheurs supposaient que la longueur des cornes des lézards était susceptible de leur fournir une protection face à la prédation. Autrement dit, les chercheurs supposaient que des cornes *plus longues* devaient fournir une meilleure protection vis à vis de la prédation. Ainsi, les lézards morts devaient avoir des cornes moins longues en moyenne que les les lézards vivants, simplement parce que porter des cornes courtes expose plus fortement les individus à la prédation. Nous avons donc une bonne raison "écologique/évolutive" de considérer un test unilatéral (la susceptibilité face à la prédation qui a entraîné une pression de sélection sur la longueur des cornes des lézards). -->
 
-<!-- Lorsque nous avons examiné cette question, nous avons fait le test du $t$ de Student sur échantillons indépendants de la façon suivante : -->
+adel %>% 
+  ggplot(aes(x = bill_depth_mm, fill = sex)) +
+  geom_density(alpha = 0.5, show.legend = FALSE) +
+  geom_rug() +
+  facet_wrap(~sex, ncol = 1) +
+  labs(x = "Densité", x = "Longueur du bec (mm)",
+       title = "Distribution des longueurs de bec chez les manchots Adélie",
+       subtitle = "nb femelles : 73, nb mâles : 73") +
+  scale_fill_brewer(palette = "Accent")
 
-<!-- ```{r} -->
-<!-- t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE) -->
-<!-- ``` -->
 
-<!-- Comme l'indiquent les résultats fournis, l'hypothèse alternative utilisée pour faire le test est : "La vraie différence de moyenne n'est pas égale à 0". Autrement dit, nous avons fait un test bilatéral avec les hypothèses suivantes : -->
+adel %>% 
+  group_by(sex) %>% 
+  rstatix::shapiro_test(bill_length_mm)
 
-<!-- - H$_0$ : la moyenne des 2 populations est égale, leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$). -->
-<!-- - H$_1$ : la moyenne des 2 populations est différente, leur différence ne vaut pas 0 ($\mu_{killed}-\mu_{living} \neq 0$). -->
+leveneTest(bill_length_mm ~ sex, data = adel)
 
-<!-- Ce test est donc rigoureusement équivalent à celui-ci : -->
+t.test(bill_length_mm ~ sex, data = adel, var.equal = TRUE)
+```
 
-<!-- ```{r} -->
-<!-- t.test(Horn_len ~ Survival, -->
-<!--        data = Lizard, var.equal = TRUE, -->
-<!--        alternative = "two.sided") -->
-<!-- ``` -->
 
-<!-- Ici, nous souhaitons en fait réaliser un **test unilatéral** avec les hypothèses suivantes : -->
+## Tests bilatéraux et unilatéraux
 
-<!-- - H$_0$ : la moyenne de longueur des cornes de la population des lézards morts est égale à celle des lézards vivants. Leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$). -->
-<!-- - H$_1$ : la moyenne de longueur des cornes de la population des lézards morts est **inférieure** à celle des lézards vivants. Leur différence est inférieure à 0 ($\mu_{killed}-\mu_{living} < 0$). -->
 
-<!-- ```{r} -->
-<!-- t.test(Horn_len ~ Survival, -->
-<!--        data = Lizard, var.equal = TRUE, -->
-<!--        alternative = "less") -->
-<!-- ``` -->
+### Principe
 
-<!-- Puisque la $p$-value de ce test est inferieure à $\alpha = 0.05$, on rejette l'hypothèse nulle de l'égalité des moyennes. On valide donc l'hypothèse alternative : les lézards cornus morts ont en moyenne des cornes plus courtes que les lézards vivants. Cette différence de longueur de cornes est en faveur des lézards vivants et vaut très probablement au moins $1.4$ millimètres (c'est l'intervalle de confiance à 95% de la différence de moyennes qui nous le dit). -->
+Jusqu'à maintenant, tous les tests que nous avons réalisés sont des **tests bilatéraux**. Pour chaque test, l'hypothèse nulle est imposée. En revanche, pour certains tests, l'hypothèse alternative est à choisir (et à spécifier) par l'utilisateur parmi 3 possibilités :
 
-<!-- Dernière chose importante : il ne faut pas se tromper dans le choix de l'hypothèse alternative. En effet, nous aurions pu tenter de tester exactement la même chose en formulant les hypothèses suivantes : -->
+- Une hypothèse bilatérale. C'est celle qui est utilisée par défaut si l'utilisateur ne précise rien.
+- Deux hypothèses unilatérales possibles, qui doivent être spécifiées explicitement par l'utilisateur.
 
-<!-- - H$_0$ : la moyenne de longueur des cornes de la population des lézards **vivants** est égale à celle des lézards **morts**. Leur différence vaut 0 ($\mu_{living}-\mu_{killed} = 0$). -->
-<!-- - H$_1$ : la moyenne de longueur des cornes de la population des lézards **vivants** est **supérieure** à celle des lézards **morts**. Leur différence est **supérieure** à 0 ($\mu_{living}-\mu_{killed} > 0$). -->
+Les tests unilatéraux peuvent concerner tous les tests pour lesquels les hypothèses sont de la forme suivante :
 
-<!-- Ce test est normalement exactement le même que précédemment. Toutefois, si on essaie de le réaliser, on rencontre un problème : -->
+- H$_0$ : la valeur d'un paramètre de la population est égale à $k$ ($k$ peut être une valeur fixe, arbitraire, choisie par l'utilisateur, ou la valeur d'un paramètre d'une autre populations).
+- H$_1$ : la valeur d'un paramètre de la population **n'est pas égale à** $k$.
 
-<!-- ```{r} -->
-<!-- t.test(Horn_len ~ Survival, -->
-<!--        data = Lizard, var.equal = TRUE, -->
-<!--        alternative = "greater") -->
-<!-- ``` -->
+En réalité, si nous remplaçons l'hypothèse H$_1$ par :
 
-<!-- Ici, la $p$-value est très supérieure à $\alpha$ puisqu'elle vaut 1. Une $p$-value de 1 devrait toujours attirer votre attention. La conclusion devrait donc être que l'on ne peut pas rejeter H$_0$ : les lézards morts et vivants ont en moyenne des cornes de même longueur. Nous savons pourtant que c'est faux. -->
+- H$_1$ : la valeur d'un paramètre de la population **est supérieure à** $k$.
 
-<!-- Le problème est ici liè à l'ordre des catégories "vivant" ou "mort" dans le facteur `Survival` du tableau `Lizard`. Les dernières lignes des tests que nous venons de faire indiquent la moyenne de chaque groupe, mais le groupe "killed" apparaît toujours avant le groupe "living". C'est l'ordre des niveaux dans le facteur `Survival` qui doit dicter la syntaxe appropriée : -->
+ou par :
 
-<!-- ```{r} -->
-<!-- Lizard$Survival -->
-<!-- ``` -->
+- H$_1$ : la valeur d'un paramètre de la population **est inférieure à** $k$.
 
-<!-- Par défaut, dans R, les niveaux d'un facteur sont classés par ordre alphabétique sauf si on spécifie manuellement un ordre différent. Ici, le niveau "killed" est donc le premier niveau du facteur, et "living" le second. Lorsque l'on réalise un test de Student avec ces données (ou un test de Wilcoxon d'ailleurs), la différence de moyenne qui est examinée par le test est donc "moyenne des `killed` - moyenne des `living`". Lorsque nous avons tapé ceci : -->
+nous réalisons un test unilatéral.
 
-<!-- ```{r, eval = FALSE} -->
-<!-- t.test(Horn_len ~ Survival, -->
-<!--        data = Lizard, var.equal = TRUE, -->
-<!--        alternative = "greater") -->
-<!-- ``` -->
+Dans `RStudio`, la syntaxe permettant de spécifier l'hypothèse alternative que nous souhaitons utiliser est toujours la même. Il faut préciser, au moment de faire le test l'argument suivant :
 
-<!-- nous avons en réalité posé les hypothèses suivantes : -->
+- `alternative = "two.sided"` : pour faire un test bilatéral. Si on ne le fait pas explicitement, c'est de toutes façons cette valeur qui est utilisée par défaut.
+- `alternative = "greater"` : pour choisir l'hypothèse unilatérale "`>`".
+- `alternative = "less"` : pour choisir l'hypothèse unilatérale "`<`".
 
-<!-- - H$_0$ : la moyenne de longueur des cornes de la population des lézards **morts** est égale à celle des lézards **vivants**. Leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$). -->
-<!-- - H$_1$ : la moyenne de longueur des cornes de la population des lézards **morts** est **supérieure** à celle des lézards **vivants**. Leur différence est **supérieure** à 0 ($\mu_{killed}-\mu_{living} > 0$). -->
+Attention : le choix d'utiliser "greater" ou "less" dépend donc de l'ordre dans lequel les échantillons sont spécifiés. Cette syntaxe est valable pour tous les tests de Student vus jusqu'ici (un échantillon, deux échantillons appariés, deux échantillons indépendants) et pour leurs alternatives non paramétriques (test de Wilcoxon des rangs signés, test de Wilcoxon de la somme des rangs, test du $t$ de Welch).
 
-<!-- Ce test est donc erronné, ce qui explique qu'il nous renvoie un résultat faux et une $p$-value de 1. Ici, puisque l'ordre des catégories est "killed" d'abord et "living" ensuite, la seule façon correcte de faire un test unilatéral qui a du sens est donc celle que nous avons réalisée en premier : -->
+:::{.callout-important}
+## Attention
 
-<!-- ```{r, eval = FALSE} -->
-<!-- t.test(Horn_len ~ Survival, -->
-<!--        data = Lizard, var.equal = TRUE, -->
-<!--        alternative = "less") -->
-<!-- ``` -->
+L'utilisation de tests unilatéraux doit être réservée exclusivement aux situations pour lesquelles le choix de l'hypothèse unilatérale est possible à justifier par un mécanisme quelconque (biologique, physiologique, comportemental, écologique, génétique, évolutif, biochimique, etc.). Observer que l'un des échantillons a une moyenne plus grande ou plus faible qu'un autre lors de la phase des statistiques descriptives des données **n'est pas du tout une raison suffisante**. Il faut pouvoir justifier le choix de l'hypothèse alternative par une explication valable. D'ailleurs, si on veut être rigoureux, il faudrait toujours formuler les hypothèses que l'on souhaite tester **avant** de mettre en place le protocole expérimental et **avant** d'acquérir les données.
+:::
 
+Pour s'embêter avec les tests unilatéraux puisqu'il est si rare qu'on ait le droit de les faire ? Tout simplement parce que toutes choses étant égales par ailleurs, un test unilatéral est toujours plus puissant (parfois, beaucoup plus puissant) qu'un test bilatéral. Or, la puissance est quelque chose qu'on cherche à maximiser (voir sec-puiss). Lorsqu'il est pertinent de réaliser un test unilatéral, on doit donc toujours le faire.
 
-<!-- ### Exercice d'application -->
+Reprenons l'un des exemples examinés précédemment pour mieux comprendre comment tout cela fonctionne.
 
-<!-- Reprenez chaque exemple et exercice de cette séance de TP et identifiez les situations où un test unilatéral aurait du sens. Si vous en trouvez, faites ce test et assurez-vous que les hypothèses choisies sont bien celles qui sont utilisées lors du test. -->
+
+
+### Un exemple pas à pas
+
+Reprenons l'exemple des lézards cornus. L'étude a été réalisée parce que les chercheurs supposaient que la longueur des cornes des lézards était susceptible de leur fournir une protection face à la prédation. Autrement dit, les chercheurs supposaient que des cornes *plus longues* devaient fournir une meilleure protection vis à vis de la prédation. Ainsi, les lézards morts devaient avoir des cornes moins longues en moyenne que les les lézards vivants, simplement parce que porter des cornes courtes expose plus fortement les individus à la prédation. Nous avons donc une bonne raison "écologique/évolutive" de considérer un test unilatéral (la susceptibilité face à la prédation qui a entraîné une pression de sélection sur la longueur des cornes des lézards), avant même de collecter les données.
+
+Lorsque nous avons examiné cette question, nous avons fait le test du $t$ de Student sur échantillons indépendants de la façon suivante :
+
+```{r}
+t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE)
+```
+
+Comme l'indiquent les résultats fournis, l'hypothèse alternative utilisée pour faire le test est : "La vraie différence de moyenne n'est pas égale à 0". Autrement dit, nous avons fait un test bilatéral avec les hypothèses suivantes :
+
+- H$_0$ : la moyenne des 2 populations est égale, leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$).
+- H$_1$ : la moyenne des 2 populations est différente, leur différence ne vaut pas 0 ($\mu_{killed}-\mu_{living} \neq 0$).
+
+Ce test est donc rigoureusement équivalent à celui-ci :
+
+```{r}
+t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE,
+       alternative = "two.sided")
+```
+
+Ici, nous souhaitons en fait réaliser un **test unilatéral** avec les hypothèses suivantes :
+
+- H$_0$ : la moyenne de longueur des cornes de la population des lézards morts est égale à celle des lézards vivants. Leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$).
+- H$_1$ : la moyenne de longueur des cornes de la population des lézards morts est **inférieure** à celle des lézards vivants. Leur différence est inférieure à 0 ($\mu_{killed}-\mu_{living} < 0$).
+
+```{r}
+t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE,
+       alternative = "less")
+```
+
+Puisque la $p$-value de ce test est inférieure à $\alpha = 0.05$, on rejette l'hypothèse nulle de l'égalité des moyennes. On valide donc l'hypothèse alternative : les lézards cornus morts ont en moyenne des cornes plus courtes que les lézards vivants. Cette différence de longueur de cornes est en faveur des lézards vivants et vaut très probablement au moins $1.4$ millimètres (c'est l'intervalle de confiance à 95% de la différence de moyennes qui nous le dit).
+
+Dernière chose importante : il ne faut pas se tromper dans le choix de l'hypothèse alternative. En effet, nous aurions pu tenter de tester exactement la même chose en formulant les hypothèses suivantes :
+
+- H$_0$ : la moyenne de longueur des cornes de la population des lézards **vivants** est égale à celle des lézards **morts**. Leur différence vaut 0 ($\mu_{living}-\mu_{killed} = 0$).
+- H$_1$ : la moyenne de longueur des cornes de la population des lézards **vivants** est **supérieure** à celle des lézards **morts**. Leur différence est **supérieure** à 0 ($\mu_{living}-\mu_{killed} > 0$).
+
+Ce test est normalement exactement le même que précédemment. Toutefois, si on essaie de le réaliser, on rencontre un problème :
+
+```{r}
+t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE,
+       alternative = "greater")
+```
+
+Ici, la $p$-value est très supérieure à $\alpha$ puisqu'elle vaut 1. Une $p$-value de 1 devrait toujours attirer votre attention. La conclusion devrait donc être que l'on ne peut pas rejeter H$_0$ : les lézards morts et vivants ont en moyenne des cornes de même longueur. Nous savons pourtant que c'est faux.
+
+Le problème est ici liè à l'ordre des catégories "vivant" ou "mort" dans le facteur `Survival` du tableau `Lizard`. Les dernières lignes des tests que nous venons de faire indiquent la moyenne de chaque groupe, mais le groupe "killed" apparaît toujours avant le groupe "living". C'est l'ordre des niveaux dans le facteur `Survival` qui doit dicter la syntaxe appropriée :
+
+```{r}
+Lizard$Survival
+```
+
+Par défaut, dans `RStudio`, les niveaux d'un facteur sont classés par ordre alphabétique sauf si on spécifie manuellement un ordre différent. Ici, le niveau "killed" est donc le premier niveau du facteur, et "living" le second. Attention, on parle bien ici des niveaux, ou modalités, et non des données elles-mêmes. Ici, le premier lézard mesuré appartient à la catégorie `living`. Ça n'est pas ça qui est important : c'est bien l'ordre des niveaux qui compte, et on peut le vour tout en bas, après `Levels: ...`. Lorsque l'on réalise un test de Student avec ces données (ou un test de Wilcoxon d'ailleurs), la différence de moyenne qui est examinée par le test est donc "moyenne des `killed` - moyenne des `living`". Lorsque nous avons tapé ceci :
+
+```{r, eval = FALSE}
+t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE,
+       alternative = "greater")
+```
+
+nous avons donc en réalité posé les hypothèses suivantes :
+
+- H$_0$ : la moyenne de longueur des cornes de la population des lézards **morts** est égale à celle des lézards **vivants**. Leur différence vaut 0 ($\mu_{killed}-\mu_{living} = 0$).
+- H$_1$ : la moyenne de longueur des cornes de la population des lézards **morts** est **supérieure** à celle des lézards **vivants**. Leur différence est **supérieure** à 0 ($\mu_{killed}-\mu_{living} > 0$).
+
+Ce test est donc erroné, ce qui explique qu'il nous renvoie un résultat faux et une $p$-value de 1. Ici, puisque l'ordre des catégories est "killed" d'abord et "living" ensuite, la seule façon correcte de faire un test unilatéral qui a du sens est donc celle que nous avons réalisée en premier :
+
+```{r, eval = FALSE}
+t.test(Horn_len ~ Survival, data = Lizard, var.equal = TRUE,
+       alternative = "less")
+```
+
+Faites donc toujours attention à l'ordre des catégories de vos facteurs pour ne pas vous tromper. Une façon simple de vérifier cet ordre et d'observer vos graphiques (par exemple, les boîtes à moustaches). L'ordre dans lequel les catégories apparaissent sur l'axe des `x` reflète l'ordre des catégorie du facteur porté par cet axe :
+
+```{r}
+Lizard %>% 
+  ggplot(aes(x = Survival, y = Horn_len)) +
+  geom_boxplot()
+```
+
+### Exercice d'application
+
+Reprenez chaque exemple et exercice traité depuis le premier chapitre et identifiez les situations où un test unilatéral aurait du sens. Si vous en trouvez, faites ce test et assurez-vous que les hypothèses choisies sont bien celles qui sont utilisées lors du test.
