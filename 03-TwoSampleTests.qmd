@@ -5,8 +5,6 @@ editor_options:
 ---
 # Comparaison de moyennes : deux échantillons indépendants {#sec-moy3}
 
-En cours
-
 ## Pré-requis {#sec-packages3}
 
 Comme pour chaque nouveau chapitre, je vous conseille de travailler dans un nouveau script que vous placerez dans votre répertoire de travail, et dans une nouvelle session de travail (Menu `Session > Restart R`). Inutile en revanche de créer un nouveau `Rproject` : vos pouvez tout à fait avoir plusieurs script dans le même répertoire de travail et pour un même `Rproject`. Comme toujours, consultez [le livre en ligne du semestre 3](https://besibo.github.io/BiometrieS3/01-R-basics.html#sec-code) si vous ne savez plus comment faire.
@@ -250,7 +248,7 @@ Lizard %>%
 
 Le test paramétrique le plus puissant que nous puissions faire pour comparer la moyenne de 2 populations est le test de Student. Ce test étant paramétrique, nous devons nous assurer que ses conditions d'application sont vérifiées avant de pouvoir le réaliser.
 
-### Conditions d'application
+### Conditions d'application {#sec-robust}
 
 Les conditions d'application de ce test sont au nombre de 3 :
 
@@ -358,7 +356,7 @@ Ici encore, les conclusions sont les mêmes :
 Ici, puisque l'homoscédasticité est vérifiée, on passe au point 3 de la procédure.
 
 
-### Réalisation du test et interprétation
+### Réalisation du test et interprétation {#sec-student}
 
 Puisque la taille des cornes du lézard cornu suit approximativement la même distribution "presque Normale" dans les 2 populations (lézards morts et vivants) et que ces 2 populations ont des variances homogènes, on peut réaliser le test du $t$ de Student sur deux échantillons indépendants.
 
@@ -382,7 +380,7 @@ Ce test confirme donc bien l'impression des chercheurs : les lézards principale
 Notez bien que l'intervalle de confiance à 95% qui est fourni avec les résultats du test est l'intervalle de confiance à 95% de la différence de moyenne entre les 2 groupes. Cet intervalle nous donne donc une idée de la **magnitude de l'effet**, de son ampleur. En effet, dire que les lézards morts ont des cornes en moyenne plus courtes est intéressant, mais cela n'aura pas la même portée si leurs cornes sont plus courtes de 0.02 millimètres ou si elles sont plus courtes de 5 millimètres. Un test statistique permet de rejeter ou non une hypothèse nulle, mais c'est bien l'estimation (la moyenne de chaque groupe et l'intervalle de confiance à 95% de la différence) qui nous dit ce qu'on doit penser des résultats, et de leur pertinence (écologique, biologique, physiologie, comportementale, etc.).
 
 
-### L'alternative non paramétrique
+## L'alternative non paramétrique
 
 Si les conditions d'application du test de Student ne sont pas vérifiées (c'est bien le cas ici puisque la longueur des cornes ne suit pas une distribution Normale dans la population des lézards vivants), notre procédure nous conduit à l'étape 4 : nous devons utiliser un équivalent non paramétrique au test de Student. C'est le cas du **test de Wilcoxon sur la somme des rangs** (également appelé test de Mann-Whitney). Comme pour tous les tests de Wilcoxon, la comparaison porte alors non plus sur les moyennes mais sur les médianes.
 
@@ -398,7 +396,7 @@ L'argument `var.equal = TRUE` n'existe pas pour ce test, puisque c'est justement
 La conclusion est ici la même que pour le test de Student : puisque la $p$-value est très inférieure à $\alpha$, on rejette l'hypothèse nulle : les médianes sont bel et bien différentes.
 
 
-### L'autre alternative non paramétrique
+## L'autre alternative non paramétrique
 
 Enfin, dans le cas où la variable étudiée suit la loi Normale dans les deux populations mais qu'elle n'a pas la même variance dans les deux populations (donc si vous arrivez au point 5 de la procédure décrite plus haut), il est toujours possible de réaliser un test de Wilcoxon, il est préférable de réaliser un test de Student modifié : le **test approché du $t$ de Welch**. Ce test est moins puissant que le test de Student classique, mais il reste plus puissant que le test de Wilcoxon, et surtout, il permet de comparer les moyennes et non les médianes.
 

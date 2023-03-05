@@ -1,3 +1,4 @@
 # Régression linéaire {#sec-regression}
 
 En cours...
+
