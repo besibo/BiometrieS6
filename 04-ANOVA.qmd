@@ -5,7 +5,7 @@ editor_options:
 ---
 # Comparaison de moyennes : plus de 2 groupes {#sec-anova}
 
-## Pré-requis {#sec-packages3}
+## Pré-requis {#sec-packages4}
 
 Comme pour chaque nouveau chapitre, je vous conseille de travailler dans un nouveau script que vous placerez dans votre répertoire de travail, et dans une nouvelle session de travail (Menu `Session > Restart R`). Inutile en revanche de créer un nouveau `Rproject` : vos pouvez tout à fait avoir plusieurs script dans le même répertoire de travail et pour un même `Rproject`. Comme toujours, consultez [le livre en ligne du semestre 3](https://besibo.github.io/BiometrieS3/01-R-basics.html#sec-code) si vous ne savez plus comment faire.
 
