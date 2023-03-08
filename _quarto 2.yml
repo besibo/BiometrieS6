@@ -16,7 +16,7 @@ book:
     - 02-TwoSamplePairedTests.qmd
     - 03-TwoSampleTests.qmd
     - 04-ANOVA.qmd
-    - 05-CorrelationRegression.qmd
+    - 05-Regression.qmd
     - 06-PropTests.qmd
     - references.qmd
 

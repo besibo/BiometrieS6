@@ -466,7 +466,7 @@ t.test(bill_length_mm ~ sex, data = adel, var.equal = TRUE)
 ```
 
 
-## Tests bilatéraux et unilatéraux {#sec-bilat}
+## Tests bilatéraux et unilatéraux
 
 
 ### Principe
