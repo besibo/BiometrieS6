@@ -587,7 +587,7 @@ Saisissez ces données dans `RStudio` et faites-en l'analyse. Vous tenterez de d
 L'efficacité de 6 insecticides nommés A, B, C, D, E et F a été testée sur 6 parcelles agricoles. Chaque insecticide de cette liste a été appliqué sur une parcelle agricole choisie au hasard. Deux semaines plus tard, 12 plants ont été collectés dans chaque parcelle agricole et le nombre d'insectes toujours vivants sur chacun d'entre eux a été compté. Les résultats sont présentés dans le fichier [`Insectes.csv`](data/Insectes.csv). Importez ces données dans `RStudio` et faites-en l'analyse. Tous les insecticides ont-ils la même efficacité ? Si la réponse est non, quels sont les insecticides les plus (ou les moins) efficaces.
 
 
-### La longueur des nageoirs des manchots femelles
+### La longueur des nageoires des manchots femelles
 
 Avec le jeu de données `penguins` du package `palmerpenguins`, comparez la longueur des nageoires des femelles des 3 espèces de manchots. Les femelles des 3 espèces ont-elles toutes des nageoires de longueur différentes, et quelle est la magnitude de ces éventuelles différences ?
 

@@ -1,24 +1,25 @@
 project:
   type: book
+  output-dir: docs
 
 book:
   title: "TP de Biométrie<br> Semestre 6<br>"
   author: "Benoît Simon-Bouhet"
   date: now
-  date-format: "full"
+  date-format: "dddd D MMMM YYYY"
   search: true
   downloads: pdf
-  page-navigation: true
   repo-url: "https://github.com/besibo/BiometrieS6"
   chapters:
     - index.qmd
-    - 01-OneSampleTests.qmd
-    - 02-TwoSamplePairedTests.qmd
-    - 03-TwoSampleTests.qmd
+    # - 01-OneSampleTests.qmd
+    # - 02-TwoSamplePairedTests.qmd
+    # - 03-TwoSampleTests.qmd
     - 04-ANOVA.qmd
     - 05-Correlation.qmd
     - 06-Regression.qmd
     - 07-PropTests.qmd
+    # - 08-Corrections.qmd
     - references.qmd
 
 bibliography: all.bib
@@ -44,8 +45,6 @@ format:
     smooth-scroll: true
     link-external-icon: true
     link-external-newwindow: true
-    toc: true
-    toc-depth: 4
   pdf:
     documentclass: scrreprt
     papersize: a4

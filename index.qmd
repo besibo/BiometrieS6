@@ -160,7 +160,7 @@ Au final :
 - les chapitres 2 et 3 doivent être traités avant le début de la troisième séance de TP
 - le chapitre 4 doit être traité avant le début de la quatrième séance de TP
 - les chapitres 5 et 6 doivent être traités avant la fin de la quatrième séance de TP
-- faute de temps cette année, le chapitre 7, consacré aux tests de comparaison de proportion, ne sera finalement pas traité
+- faute de temps cette année, le chapitre 7, consacré aux tests de comparaison de proportions, ne sera finalement pas traité
 
 Vous comprenez j'espère que dans chaque chapitre, une ou des méthodes vous sont présentées en détail. À la fin de chaque chapitre, un ou des exercices d'application vous sont proposés. À l'issue des ces TP, vous disposerez, dans votre arsenal de biostatisticien, de près d'une quinzaine de tests statistiques différents. Le plus difficile sera d'être en mesure d'identifier lequel choisir face à un jeu de données inconnu, et face à des questions nouvelles. Votre travail consiste donc aussi à vous assurer que vous comprenez bien dans quelle situation utiliser chaque test, et à savoir comment vérifier que vous avez le droit d'utiliser tel ou tel test pour répondre aux questions posées.
 

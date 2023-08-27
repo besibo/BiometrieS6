@@ -72,7 +72,7 @@ plant
 Ce premier examen nous montre que nous disposons bien de 161 observations pour 2 variables : le nombre d'espèces présentes dans la parcelle pendant 10 ans, et l'indice de stabilité de la biomasse de chaque parcelle. Visiblement, les données sont au bon format, on dispose bien de toutes les variables dont on a besoin et leurs noms sont parlants. Nous n'aurons donc pas besoin de modifier quoi que ce soit dans ces données.
 
 
-## Exploration statistique
+## Exploration statistique des données
 
 Comme toujours, on examine quelques statistiques descriptives de position et de dispersion (voir d'incertitude), pour se faire un idée de la forme des données et pour repérer les éventuelles données manquantes ou valeurs aberrantes.
 
@@ -92,7 +92,7 @@ Cette fois, on obtient des informations pour chaque groupe de parcelles contenan
 
 Comme pour la corrélation, il est inutile ici de calculer des indices d'imprécision. Ça n'est pas la moyenne de ces variables qui nous intéresse, mais la relation entre elles. Nous serons en revanche amenés à calculer des intervalles de confiances à 95% des paramètres de la régression linéaire, puisque ce sont eux qui nous permettront de qualifier (et quantifier) la relation entre les 2 variables.
 
-## Exploration graphique
+## Exploration graphique des données
 
 Visualiser les données est toujours aussi indispensable. Ici, comme pour la corrélation, on commence par un nuage de points pour visualiser les données et la forme de leur relation :
 ```{r}
