@@ -12,9 +12,6 @@ book:
   repo-url: "https://github.com/besibo/BiometrieS6"
   chapters:
     - index.qmd
-    # - 01-OneSampleTests.qmd
-    # - 02-TwoSamplePairedTests.qmd
-    # - 03-TwoSampleTests.qmd
     - 04-ANOVA.qmd
     - 05-Correlation.qmd
     - 06-Regression.qmd

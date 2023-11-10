@@ -370,7 +370,7 @@ Important
 <p>La première colonne de ce tableau indique, pour chaque individu suivi, le nombre de visites reçues au nid de la part d’adultes agressifs lorsqu’ils étaient poussins. La seconde colonne indique, pour ces mêmes individus devenus adultes, le nombre de visites agressives effectuées à des nids d’autres poussins. Ce nombre n’est pas dans la même unité que la première variable car il a été corrigé par d’autres variables d’intérêt pour les chercheurs.</p>
 <p>Il manque à ce tableau une variable indiquant le code des individus. Elle n’est pas indispensable, mais la rajouter est une bonne habitude à prendre pour toujours travailler avec des “données rangées”. Puisqu’on dispose de 24 individus, on leur assigne donc un code de 1 à 24 :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>birds <span class="ot">&lt;-</span> birds <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>birds <span class="ot">&lt;-</span> birds <span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ID =</span> <span class="fu">factor</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>))</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>birds</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -390,7 +390,7 @@ Important
 # ℹ 14 more rows</code></pre>
 </div>
 </div>
-<p>Présentées sous cette forme, les données ressemblent beaucoup à celles du <span class="quarto-unresolved-ref">?sec-moy2</span>. Ça n’est pas un hasard : les données dont nous disposons ici sont appariées. Calculer la corrélation entre 2 variables n’a de sens que si chaque unité d’échantillonnage ou d’observation (ici, les individus), fournissent 2 valeurs dont on souhaite mesurer l’association. Dans l’étude sur les effets de la testostérone chez les carouges à épaulettes, on avait, pour chaque individu étudié, 2 mesures d’immunocompétence : une avant et l’autre après l’opération chirurgicale. Ici, chaque Fou de Grant étudié fournit 2 valeurs également. Contrairement à l’étude des carouges à épaulettes, il s’agit de deux variables distinctes (nombre de visites agressives reçues à l’état de poussin d’une part, et comportement agressif à l’âge adulte d’autre part), mais les 2 mesures sont bien liées puisqu’elles sont obtenues chez le même individu.</p>
+<p>Présentées sous cette forme, les données ressemblent beaucoup à celles de la <a href="https://besibo.github.io/BiometrieS5/02-TwoSamplePairedTests.html#importation-et-mise-en-forme-des-données">section 2.3</a> du livre en ligne du semestre 5. Ça n’est pas un hasard : les données dont nous disposons ici sont appariées. Calculer la corrélation entre 2 variables n’a de sens que si chaque unité d’échantillonnage ou d’observation (ici, les individus), fournissent 2 valeurs dont on souhaite mesurer l’association. Dans l’étude sur les effets de la testostérone chez les carouges à épaulettes, on avait, pour chaque individu étudié, 2 mesures d’immunocompétence : une avant et l’autre après l’opération chirurgicale. Ici, chaque Fou de Grant étudié fournit 2 valeurs également. Contrairement à l’étude des carouges à épaulettes, il s’agit de deux variables distinctes (nombre de visites agressives reçues à l’état de poussin d’une part, et comportement agressif à l’âge adulte d’autre part), mais les 2 mesures sont bien liées puisqu’elles sont obtenues chez le même individu.</p>
 <p>Pour bien enfoncer le clou, voici un autre exemple. Calculer la corrélation entre la taille des femmes françaises et la tension artérielle des femmes anglaises n’a strictement aucun sens car ce sont des groupes de femmes distincts qui fournissent les mesures de chaque variable. En revanche, sélectionner un groupe de femmes au hasard dans la population mondiale, et examiner, pour chacune des femmes de l’échantillon, à la fois la taille et la tension artérielle est pertinent. On peut alors se poser la question de lien potentiel existant entre ces 2 variables dans la population générale. L’étude de la corrélation entre la taille et la tension artérielle chez les femmes prend alors tout sons sens.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -445,8 +445,8 @@ Group variables            None
 <p>Comme toujours, la fonction <code>skim()</code> nous renseigne sur la tendance centrale, ou <strong>position</strong>, des variables étudiées (grâce aux moyennes et médianes) et sur la <strong>dispersion</strong> des données (grâce à l’écart-type et aux “minis-histogrammes”). Ici, si la variable <code>nVisitsNestling</code> semble être à peu près distribuée selon une courbe en cloche (asymétrique), ce n’est pas le cas de la variable <code>futureBehavior</code> qui semble présenter une très forte asymétrie à gauche.</p>
 <p>D’habitude, on calcule à ce stade des indices d’<strong>incertitude</strong> : l’erreur standard de la moyenne ou l’intervalle de confiance de la moyenne. Ici, ça n’est pas utile car les moyennes en elles-mêmes ne nous intéressent pas, et donc leurs incertitudes non plus. C’est en revanche la relation entre les 2 variables numériques qui nous intéresse, en particulier l’intensité et le sens de cette relation. On calcule donc maintenant le coefficient de corrélation linéaire entre les 2 variables :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(nVisitsNestling, futureBehavior) <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(nVisitsNestling, futureBehavior) <span class="sc">|&gt;</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>()</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                nVisitsNestling futureBehavior
@@ -465,7 +465,7 @@ futureBehavior        0.5337225      1.0000000</code></pre>
 <p>Pour répondre à la question posée et visualiser la relation entre les deux variables numériques, on peut simplement associer chaque variable à un axe d’un graphique et faire un nuage de points. Je vous encourage à jeter un œil à <a href="https://besibo.github.io/BiometrieS3/03-visualization.html#deux-variables-numériques">ce chapitre du livre en ligne du semestre 3</a> pour voir quels types de graphiques sont pertinents dans cette situation.</p>
 <p>Afin de savoir si la valeur de <span class="math inline">\(r\)</span> calculée précédemment dans notre échantillon (0.534) reflète une relation linéaire mais moyenne, ou une relation qui n’est pas vraiment linéaire, nous pouvons donc faire un nuage de points :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">|&gt;</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> nVisitsNestling, <span class="at">y =</span> futureBehavior)) <span class="sc">+</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Nombre de visites reçues par le poussin"</span>,</span>
@@ -482,13 +482,13 @@ futureBehavior        0.5337225      1.0000000</code></pre>
 <p>On constate ici que la corrélation moyenne obtenue plus haut est due au fait que les points sont assez dispersés, et non au fait que la relation n’est pas linéaire. On peut donc dire que la relation, si elle existe, n’est pas parfaite. Le comportement des individus devenus adultes semble donc en partie lié au nombre de visites agressives qu’ils ont reçues étant jeunes, mais ce n’est certainement pas le seul facteur influençant leur comportement. Un test d’hypothèses devrait nous permettre de déterminer si la corrélation linéaire observée ici est simplement le fruit du hasard de l’échantillonnage, ou si au contraire la relation observée n’est pas seulement le fruit du hasard, mais bien le reflet d’un lien réel entre les 2 variables.</p>
 <p>Si visualiser la distribution des données n’est pas indispensable pour se faire une idée de la nature du lien qui existe (ou non) entre les deux variables, cela sera néanmoins utile pour vérifier les conditions d’application du test de corrélations paramétrique de Pearson. Comme dans les chapitres précédents, nous avons donc intérêt à examiner la distribution de ces 2 variables par le biais d’histogrammes, de graphiques de densité ou de boîtes à moustaches.</p>
 <div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">|&gt;</span> </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> nVisitsNestling)) <span class="sc">+</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"firebrick2"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>() <span class="sc">+</span></span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Visites reçues par le poussin"</span>,</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Densité"</span>)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">%&gt;%</span> </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">|&gt;</span> </span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> futureBehavior)) <span class="sc">+</span></span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">fill =</span> <span class="st">"firebrick2"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>() <span class="sc">+</span></span>
@@ -554,27 +554,27 @@ futureBehavior        0.5337225      1.0000000</code></pre>
 <li><span class="math inline">\(H_1\)</span> : les données ne suivent pas une distribution Normale dans la population générale.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">%&gt;%</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(nVisitsNestling) <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">|&gt;</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(nVisitsNestling) <span class="sc">|&gt;</span> </span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">shapiro.test</span>()</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Shapiro-Wilk normality test
 
-data:  .
+data:  pull(birds, nVisitsNestling)
 W = 0.95783, p-value = 0.3965</code></pre>
 </div>
 </div>
 <p>Contrairement à ce que pouvait laisser croire le graphique de densité, la variable <code>nVisitsNestling</code> suit bien une distribution Normale (test de Shapiro-Wilk, <span class="math inline">\(p = 0.397\)</span>).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">%&gt;%</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(futureBehavior) <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>birds <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(futureBehavior) <span class="sc">|&gt;</span> </span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">shapiro.test</span>()</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Shapiro-Wilk normality test
 
-data:  .
+data:  pull(birds, futureBehavior)
 W = 0.91575, p-value = 0.04709</code></pre>
 </div>
 </div>
@@ -632,7 +632,7 @@ sample estimates:
 0.5337225 </code></pre>
 </div>
 </div>
-<p>Comme pour les autres test unilatéraux, le choix d’une hypothèse alternative aberrante se traduit par une <span class="math inline">\(p-\)</span>value très forte, généralement égale à (ou très proche de) 1. Dans le cas précis de cette étude, il serait abusif de faire un tel test unilatéral. En effet, les scientifiques suppose que si un lien existe entre les deux variables, la corrélation devrait être positive. Mais avoir observé une relation de cette nature chez d’autres espèces (qui plus est, chez des espèces très différentes) n’est pas suffisant. Car peut-être qu’une relation inverse peut également être observée dans d’autres groupes, et on peut très bien imaginer des mécanismes permettant de l’expliquer. Enfin, avoir observé une corrélation positive dans notre échantillon lors de l’examen préliminaire des données n’est jamais une raison suffisante pour choisir une hypothèse alternative unilatérale. Le choix des hypothèses devrait en effet toujours être effectué avant la collecte des données (voir <span class="quarto-unresolved-ref">?sec-bilat</span>). Il est donc bien plus honnête de réaliser un test unilatéral, puis, en cas de rejet de <span class="math inline">\(H_0\)</span>, de revenir aux estimation pour interpréter les résultats et conclure. C’est que nous allons voir maintenant.</p>
+<p>Comme pour les autres test unilatéraux, le choix d’une hypothèse alternative aberrante se traduit par une <span class="math inline">\(p-\)</span>value très forte, généralement égale à (ou très proche de) 1. Dans le cas précis de cette étude, il serait abusif de faire un tel test unilatéral. En effet, les scientifiques suppose que si un lien existe entre les deux variables, la corrélation devrait être positive. Mais avoir observé une relation de cette nature chez d’autres espèces (qui plus est, chez des espèces très différentes) n’est pas suffisant. Car peut-être qu’une relation inverse peut également être observée dans d’autres groupes, et on peut très bien imaginer des mécanismes permettant de l’expliquer. Enfin, avoir observé une corrélation positive dans notre échantillon lors de l’examen préliminaire des données n’est jamais une raison suffisante pour choisir une hypothèse alternative unilatérale. Le choix des hypothèses devrait en effet toujours être effectué avant la collecte des données (voir <a href="https://besibo.github.io/BiometrieS5/03-TwoSampleTests.html#sec-bilat">section 3.10</a> du livre en ligne du semestre 5). Il est donc bien plus honnête de réaliser un test unilatéral, puis, en cas de rejet de <span class="math inline">\(H_0\)</span>, de revenir aux estimation pour interpréter les résultats et conclure. C’est que nous allons voir maintenant.</p>
 </section>
 <section id="estimation-et-intervalle-de-confiance" class="level3" data-number="2.7.4">
 <h3 data-number="2.7.4" class="anchored" data-anchor-id="estimation-et-intervalle-de-confiance"><span class="header-section-number">2.7.4</span> Estimation et intervalle de confiance</h3>

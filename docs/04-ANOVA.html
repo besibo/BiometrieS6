@@ -340,7 +340,7 @@ Cette découverte a été vivement critiquée par certains, et saluée comme une
 <p>Lorsque l’on réalise une analyse de variance, puisque les effectifs ne sont pas nécessairement identiques dans tous les groupes (c’est ce qu’on appelle un design déséquilibré, ou “unbalanced design”), présenter les tableaux au format long est indispensable. Par ailleurs, notez que les ANOVAs réalisées sur des “balanced design” (ou designs équilibrés, pour lesquels tous les groupes sont de même taille), sont beaucoup plus puissantes que les ANOVAs réalisées sur des “unbalanced designs”.</p>
 <p>Ici, le tableau de données est très simple (et de petite taille). Il n’y a pas de données manquantes et aucune création de nouvelle variable n’est nécessaire. La seule modification que nous devrions faire est de transformer la variable <code>treatment</code> en facteur :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Light <span class="ot">&lt;-</span> Light <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Light <span class="ot">&lt;-</span> Light <span class="sc">|&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">treatment =</span> <span class="fu">factor</span>(treatment))</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Comme toujours, les niveaux du facteur sont automatiquement classés par ordre alphabétique :</p>
@@ -352,7 +352,7 @@ Cette découverte a été vivement critiquée par certains, et saluée comme une
 </div>
 <p>Pour les statistiques descriptives et les graphiques qui viendront après, nous souhaitons indiquer l’ordre suivant : <code>control</code>, puis <code>knee</code>, puis <code>eyes</code> :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Light <span class="ot">&lt;-</span> Light <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Light <span class="ot">&lt;-</span> Light <span class="sc">|&gt;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">treatment =</span> <span class="fu">fct_relevel</span>(treatment, <span class="st">"control"</span>, <span class="st">"knee"</span>, <span class="st">"eyes"</span>))</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>Light</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -386,7 +386,7 @@ Levels: control knee eyes</code></pre>
 <h2 data-number="1.4" class="anchored" data-anchor-id="exploration-statistique-des-données"><span class="header-section-number">1.4</span> Exploration statistique des données</h2>
 <p>Comme toujours, et maintenant que nos données sont au bon format, il est nécessaire d’examiner quelques statistiques descriptives pour chaque catégorie étudiée. On peut tout d’abord commencer par examiner la taille de chaque échantillon :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">|&gt;</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(treatment)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
@@ -399,20 +399,20 @@ Levels: control knee eyes</code></pre>
 </div>
 <p>Nous avons ici la confirmation que le design expérimental n’est pas équilibré, puisque le groupe <code>control</code> compte un individu de plus. Nous pouvons ensuite utiliser la fonction <code>skim</code> du package <code>skimr</code> pour obtenir un résumé des données :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment) <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment) <span class="sc">|&gt;</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim</span>()</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>── Data Summary ────────────────────────
-                           Values    
-Name                       Piped data
-Number of rows             22        
-Number of columns          2         
-_______________________              
-Column type frequency:               
-  numeric                  1         
-________________________             
-Group variables            treatment 
+                           Values                      
+Name                       group_by(Light, treatment...
+Number of rows             22                          
+Number of columns          2                           
+_______________________                                
+Column type frequency:                                 
+  numeric                  1                           
+________________________                               
+Group variables            treatment                   
 
 ── Variable type: numeric ──────────────────────────────────────────────────────
   skim_variable treatment n_missing complete_rate   mean    sd    p0   p25
@@ -435,7 +435,7 @@ Group variables            treatment
 <p>Enfin, les histogrammes présentés pour chaque groupe semblent très éloignés d’une distribution Normale. C’est logique compte tenu des faibles effectifs dans chaque groupe. Nous verrons plus tard que cela n’a aucune importance puisque les conditions d’application de l’ANOVA portent sur les <strong>résidus de l’ANOVA</strong> (nous verrons plus loin de quoi il s’agit), et pas sur les données brutes.</p>
 <p>Il semble donc que seul le groupe <code>eyes</code> soit véritablement différent du groupe témoin. Pour le vérifier, on peut calculer les intervalles de confiance à 95% des moyennes. Nous examinerons ensuite quelques graphiques, puis nous ferons un test d’hypothèses.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">|&gt;</span> </span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reframe</span>(<span class="fu">mean_cl_normal</span>(shift), <span class="at">.by =</span> treatment)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 4
@@ -452,7 +452,7 @@ Group variables            treatment
 <h2 data-number="1.5" class="anchored" data-anchor-id="exploration-graphique"><span class="header-section-number">1.5</span> Exploration graphique</h2>
 <p>Comme toujours, il est indispensable de regarder à quoi ressemblent les données brutes sur un ou des graphiques. Les statistiques descriptives ne racontent en effet pas toujours toute l’histoire. Ici, nous allons superposer les données brutes, sous forme de nuage de points, aux boites à moustaches :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">|&gt;</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> shift, <span class="at">fill =</span> treatment)) <span class="sc">+</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">notch =</span> <span class="cn">TRUE</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>, </span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">outlier.colour =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
@@ -473,7 +473,7 @@ Notch went outside hinges
 </div>
 <p>Puisqu’il y a peu de données, les intervalles de confiance à 95% sont très larges. Ils dépassent d’ailleurs presque systématiquement les quartiles, ce qui explique l’apparence bizarre des boîtes à moustaches et les messages d’avertissement affichés lors de la création du graphique. Il vaudait donc mieux représenter cette figure sans ces intervalles de confiance. Toutefois, avant de les retirer, on peut constater ici que les IC 95% se chevauchent complètement pour les séries <code>control</code> et <code>knee</code>. En revanche, il n’y a aucun chevauchement de l’IC 95% du groupe <code>eyes</code> avec les 2 autres groupes. Ces réslutats sont très légèrement différents de ceux obtenus plus haut, car on examine ici les intervalles de confiance à 95% des médianes, alors qu’on regardait les intervalles de confiance à 95% des moyennes dans la section précédente. Les conclusions sont toutefois les mêmes : on s’attend donc à trouver une différence de moyenne significative entre le groupe <code>eyes</code> d’une part, et les groupes <code>control</code> et <code>knee</code> d’autre part, mais pas de différence de moyenne entre les groupes <code>control</code> et <code>knee</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">|&gt;</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> shift, <span class="at">fill =</span> treatment)) <span class="sc">+</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>, </span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">outlier.colour =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
@@ -487,7 +487,7 @@ Notch went outside hinges
 <p>On constate ici visuellement que les 3 séries ont une étendue à peu près similaire, et que le groupe <code>eyes</code> semble se distinguer des 2 autres par des valeurs plus faibles. Enfin, les boîtes contenant 50% des valeurs centrales (donc l’étendue des valeurs entre les premiers et troisièmes quartiles) recouvrent le 0 pour les 2 groupes <code>control</code> et <code>knee</code>, mais par pour <code>eyes</code>.</p>
 <p>L’examen d’un graphique de densité facetté donne les mêmes informations :</p>
 <div class="cell" data-fig.asp="1">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">|&gt;</span> </span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> shift, <span class="at">fill =</span> treatment)) <span class="sc">+</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>() <span class="sc">+</span></span>
@@ -501,7 +501,7 @@ Notch went outside hinges
 <p>Un package utile lorsque l’on dispose d’un grand nombre de groupes que l’on souhaite comparer à l’aide de graphiques de densité est le package <code>ggridges</code> :</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggridges)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">%&gt;%</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">|&gt;</span> </span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> shift, <span class="at">y =</span> treatment, <span class="at">fill =</span> treatment)) <span class="sc">+</span></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density_ridges</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Accent"</span>) <span class="sc">+</span></span>
@@ -723,7 +723,7 @@ Les tests <em>post-hoc</em>
 <p>Ici, puisque pour chaque test, un risque <span class="math inline">\(\alpha\)</span> de 5% de rejeter à tort l’hypothèse nulle est commis, réaliser 3 tests ferait monter le risque de s’être trompé quelque part à 15%. C’est la raison pour laquelle des tests spécifiques existent. Nous en verrons 2 : le test de comparaisons multiples de Student et le test de Tukey (ou “Honestly Significant Difference Test”). Pour ces tests, des précautions sont prises qui garantissent que le risque <span class="math inline">\(\alpha\)</span> <strong>global</strong> (à l’issue de l’ensemble des tests) est maîtrisé et qu’il reste fixé à 5%, quel que soit le nombre de comparaisons effectuées.</p>
 <section id="comparaisons-multiples-de-student" class="level4" data-number="1.6.4.1">
 <h4 data-number="1.6.4.1" class="anchored" data-anchor-id="comparaisons-multiples-de-student"><span class="header-section-number">1.6.4.1</span> Comparaisons multiples de Student</h4>
-<p>Le test de comparaisons multiples de Student est réalisé avec la fonction <code>pairwise.t.test()</code>. En réalité, ici, 3 tests de Student seront réalisés. Les <span class="math inline">\(p-\)</span>values des tests seront simplement modifiées afin que globalement, le risque <span class="math inline">\(\alpha\)</span> n’augmente pas. Pour chaque test réalisé, les hypothèses nulles et alternatives sont les mêmes que celles décrites à la <span class="quarto-unresolved-ref">?sec-student</span> :</p>
+<p>Le test de comparaisons multiples de Student est réalisé avec la fonction <code>pairwise.t.test()</code>. En réalité, ici, 3 tests de Student seront réalisés. Les <span class="math inline">\(p-\)</span>values des tests seront simplement modifiées afin que globalement, le risque <span class="math inline">\(\alpha\)</span> n’augmente pas. Pour chaque test réalisé, les hypothèses nulles et alternatives sont les mêmes que celles décrites à la <a href="https://besibo.github.io/BiometrieS5/03-TwoSampleTests.html#sec-robust">section 3.6.1</a> du livre en ligne du semestre 5 :</p>
 <ul>
 <li>H<span class="math inline">\(_0\)</span> : la moyenne des deux populations est égale (<span class="math inline">\(\mu_1 = \mu_2\)</span>, soit <span class="math inline">\(\mu_1 - \mu_2\)</span> = 0).</li>
 <li>H<span class="math inline">\(_1\)</span> : la moyenne des deux populations est différente (<span class="math inline">\(\mu_1 \neq \mu_2\)</span>, soit <span class="math inline">\(\mu_1 - \mu_2 \neq 0\)</span>).</li>
@@ -802,7 +802,7 @@ eyes-knee    -1.21571429 -2.1716263 -0.2598022 0.0116776</code></pre>
 <p>En revanche, les lignes 2 et 3 de ce tableau montrent des différences significatives (<span class="math inline">\(p = 0.008\)</span> et <span class="math inline">\(p = 0.012\)</span> pour les comparaisons <code>eyes</code>/<code>control</code> et <code>eyes</code>/<code>knee</code> respectivement). Les différences sont négatives, de l’ordre de -1.2 pour les 2 comparaisons, ce qui traduit des valeurs plus faibles pour <code>eyes</code> que pour les 2 autres groupes. Pour ces 2 comparaisons, les intervalles de confiance à 95% des différences ne contiennent pas le 0, mais exclusivement des valeurs négatives. Cela traduit donc bien une resynchronisation plus rapide chez les sujets dont les yeux sont exposés à la lumière que chez les sujets des 2 autres groupes.</p>
 <p>En utilisant le tableau ci-dessus, nous pouvons synthétiser graphiquement ces résultats :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(post_hoc2) <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(post_hoc2) <span class="sc">|&gt;</span></span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> contrast, <span class="at">y =</span> estimate)) <span class="sc">+</span></span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
 <span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_linerange</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high)) <span class="sc">+</span></span>
@@ -826,7 +826,7 @@ eyes-knee    -1.21571429 -2.1716263 -0.2598022 0.0116776</code></pre>
 <section id="la-robustesse-de-lanova" class="level3" data-number="1.7.1">
 <h3 data-number="1.7.1" class="anchored" data-anchor-id="la-robustesse-de-lanova"><span class="header-section-number">1.7.1</span> La robustesse de l’ANOVA</h3>
 <p>Dans la suite de cette section, nous faisons l’hypothèse, bien que ça ne soit pas le cas, que les conditions d’application de l’ANOVA ne sont pas vérifiées pour notre jeu de données. Si les conditions d’application de l’ANOVA ne sont pas remplies, alors, les résultats de l’ANOVA ne peuvent pas être examinés car ils ne sont pas valides. Il nous faut alors recourir à un test non-paramétrique afin de comparer la moyenne de plus de deux groupes à la fois.</p>
-<p>La particularité de l’ANOVA est sa grande <strong>robustesse</strong> vis-à-vis d’un non respect modéré de ses conditions d’application (voir définition de la robustesse dans la <span class="quarto-unresolved-ref">?sec-robust</span>). L’ANOVA étant particulièrement robuste, ses résultats resteront valides dans les situations suivantes :</p>
+<p>La particularité de l’ANOVA est sa grande <strong>robustesse</strong> vis-à-vis d’un non respect modéré de ses conditions d’application (voir définition de la robustesse dans la <a href="https://besibo.github.io/BiometrieS5/03-TwoSampleTests.html#sec-robust">section 3.6.1</a> du livre en ligne du semestre 5). L’ANOVA étant particulièrement robuste, ses résultats resteront valides dans les situations suivantes :</p>
 <ul>
 <li>Non normalité modérée des résidus. Si les résidus ne suivent pas parfaitement une loi Normale mais qu’ils sont néanmoins grossièrement distribués selon une courbe en cloche, les résultats de l’ANOVA resteront vrais, surtout si les effectifs sont importants.</li>
 <li>Non homogénéité des résidus. Si les résidus ne sont pas homogènes dans tous les groupes, les résultats de l’ANOVA resteront vrais tant que les échantillons seront grands, approximativement de la même taille dans tous les groupes, et à condition que les écarts de variances entre les groupes ne dépassent pas un facteur 10.</li>
@@ -939,9 +939,9 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>Avec ces résultats on progresse un peu, car outre les <span class="math inline">\(p-\)</span>values pour chaque comparaison, le test nous fournit une estimation de la différence des rangs moyens. Malheureusement, ces estimations sont souvent difficiles à interpréter (par exemple, quelle est l’unité utilisée ?) et aucun intervalle de confiance n’est fourni. On constate néanmoins que le test de Dunn donne ici des résultats comparables à ceux fournis par les tests paramétriques : le groupe <code>eyes</code> est significativement différent des deux autres. Pour obtenir les intervalles de confiance dont nous avons besoin, nous n’avons pas d’autre choix que des les calculer à l’aide du test de Wilcoxon classique, en réalisant manuellement les tests dont nous avons besoin. Ici, le test à proprement parler ne nous intéresse pas, d’ailleurs, sa <span class="math inline">\(p-\)</span>value ne doit surtout pas être prise en compte car elle ignore totalement les comparaisons multiples et conduirait donc à augmenter l’erreur de type I. La seule chose pertinente est ici <strong>la différence de (pseudo-)médiane estimée et son intervalle de confiance</strong> :</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparaisons entre les groupes `knee` et `eyes` (dans cet ordre)</span></span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">%&gt;%</span></span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(treatment <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"knee"</span>, <span class="st">"eyes"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">wilcox.test</span>(shift <span class="sc">~</span> treatment, <span class="at">data =</span> ., <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">|&gt;</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(treatment <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"knee"</span>, <span class="st">"eyes"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">wilcox.test</span>(shift <span class="sc">~</span> treatment, <span class="at">data =</span> _, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
 <span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>()</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 7
