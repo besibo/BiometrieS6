@@ -15,7 +15,7 @@ book:
     - 01-ANOVA.qmd
     - 02-Correlation.qmd
     - 03-Regression.qmd
-    - 04-PropTests.qmd
+    # - 04-PropTests.qmd
     # - 05-Corrections.qmd
     - references.qmd
 
