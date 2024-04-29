@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -49,7 +49,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "Pas de résultats",
     "search-matching-documents-text": "documents trouvés",
@@ -58,6 +64,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "correspondance de plus dans ce document",
     "search-more-matches-text": "correspondances de plus dans ce document",
     "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Annuler",
     "search-submit-button-title": "Envoyer",
     "search-label": "Recherche"
@@ -68,20 +75,47 @@ ul.task-list li input[type="checkbox"] {
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 </head>
 
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -109,7 +143,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Dernière Mise à jour</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">mardi 6 février 2024</p>
+        <p class="date">lundi 29 avril 2024</p>
       </div>
     </div>
     
@@ -119,13 +153,13 @@ ul.task-list li input[type="checkbox"] {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">TP de Biométrie<br> Semestre 6<br></a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/besibo/BiometrieS6" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./TP-de-Biométrie-br--Semestre-6-br-.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://github.com/besibo/BiometrieS6" title="Code source" class="quarto-navigation-tool px-1" aria-label="Code source"><i class="bi bi-github"></i></a>
+    <a href="./TP-de-Biométrie-br--Semestre-6-br-.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -162,6 +196,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./05-Corrections.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Correction des exercices</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -169,7 +209,7 @@ ul.task-list li input[type="checkbox"] {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -195,6 +235,7 @@ ul.task-list li input[type="checkbox"] {
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
+
 
 
 
@@ -317,9 +358,9 @@ Important
 <!-- 1. La première semaine (09) est consacrée à la comparaison de la moyenne d'une population à une valeur théorique (@sec-moy1). Les fonctions nouvelles sont peu nombreuses, mais ce chapitre est l'occasion d'aborder des notions complexes (test paramétrique ou non, hypothèses nulles et alternatives, $p-$value, décision, erreurs, puissance, etc.) qui demanderont une lecture très attentive. C'est également la première fois que vous serez confronté à toutes les étapes d'une analyse de données : de l'importation des données dans `RStudio` jusqu'à la réalisation des tests statistiques et leur interprétation, en passant par le calcul des statistiques descriptives appropriées, la réalisation de graphiques exploratoires pertinents, et la vérification des conditions d'application du test. La maîtrise du logiciel n'est donc ici qu'une petite partie de ce qui est demandé : maîtriser les notions et concepts, comprendre la démarche d'analyse, être capable de l'expliquer et de la reproduire, est ici crucial. -->
 <!-- 2. La deuxième semaine (10) est consacrée à la comparaison de la moyenne de 2 populations, dans deux situations : lorsque les données des deux groupes sont appariées (@sec-moy2) et quand elles sont indépendantes (@sec-moy3). Ces chapitre seront également l'occasion d'aborder la notion de test unilatéral et bilatéral et d'apprendre comment coder des hypothèses alternatives spécifiques dans `RStudio`. Comme pour la semaine 10, vous aurez l'occasion de mettre en œuvre la totalité de la démarche d'analyse statistique. -->
 <ol type="1">
-<li><p>La première séance sera consacrée à l’analyse de variance (<a href="01-ANOVA.html"><span>Chapitre&nbsp;1</span></a>). Il s’agit du premier exemple de modèle linéaire que nous examinerons ensemble. Ce test est assez différents des autres (ceux que nous avons décrits au semestre 5) dans sa philosophie. Vous aurez donc besoin d’un peu de temps pour vous approprier la façon de faire, en particulier la logique de la vérification des conditions d’application, et il n’est pas exclus que vous ayez beosin de “déborder” un peu sur la deuxième séance pour terminer ce chapitre. il y a toutefois plusieurs semaines entre la première et la deuxième séance. Vous devriez donc avoir le temps de venir à bout de ce chapitre avant la fin des vacances de février.</p></li>
-<li><p>La deuxième séance sera consacrée à la corrélation (<a href="02-Correlation.html"><span>Chapitre&nbsp;2</span></a>) qui permet de mesurer l’intensité de la relation qui existe entre deux variables numériques continues. Cette notion en apparence assez simple cache en réalité de nombreuses subtilités (corrélation <em>vs.</em> causalité, variables confondantes, tests paramétriques ou on paramétriques, etc.). Il sera en particulier important d’être capable de sitinguer clairement les objectifs, les ressemblances et les différences entre corrélation d’une part, et régression linéaire d’autre part. Les évaluations passées ont montré que distinguer ces 2 notions était difficile pour nombre d’entre vous.</p></li>
-<li><p>La troisième séance sera consacrée à la régression linéaire (<a href="03-Regression.html"><span>Chapitre&nbsp;3</span></a>). Outre ses ressemblances avec la corrélation, cette méthode est également le second type de modèle linéaire au programme cette année, après l’ANOVA. Puisque l’ANOVA et la régression linéaires sont deux méthodes de la famille des modèles linéaires, beaucoup de choses seront communes à ces méthodes (étapes de l’analyse, fonstion à utiliser dans <code>RStudio</code>, façon de vérifier les conditions d’application…).Mais attention, ce chapitre reste conséquent, et il faudra là encore que vous soyez capables de bien distinguer corrélation et régression linéaire, mais aussi ANOVA et régression linéaire.</p></li>
+<li><p>La première séance sera consacrée à l’analyse de variance (<a href="01-ANOVA.html" class="quarto-xref"><span>1&nbsp; Comparaison de moyennes : plus de 2 groupes</span></a>). Il s’agit du premier exemple de modèle linéaire que nous examinerons ensemble. Ce test est assez différents des autres (ceux que nous avons décrits au semestre 5) dans sa philosophie. Vous aurez donc besoin d’un peu de temps pour vous approprier la façon de faire, en particulier la logique de la vérification des conditions d’application, et il n’est pas exclus que vous ayez beosin de “déborder” un peu sur la deuxième séance pour terminer ce chapitre. il y a toutefois plusieurs semaines entre la première et la deuxième séance. Vous devriez donc avoir le temps de venir à bout de ce chapitre avant la fin des vacances de février.</p></li>
+<li><p>La deuxième séance sera consacrée à la corrélation (<a href="02-Correlation.html" class="quarto-xref"><span>2&nbsp; Corrélation</span></a>) qui permet de mesurer l’intensité de la relation qui existe entre deux variables numériques continues. Cette notion en apparence assez simple cache en réalité de nombreuses subtilités (corrélation <em>vs.</em> causalité, variables confondantes, tests paramétriques ou on paramétriques, etc.). Il sera en particulier important d’être capable de sitinguer clairement les objectifs, les ressemblances et les différences entre corrélation d’une part, et régression linéaire d’autre part. Les évaluations passées ont montré que distinguer ces 2 notions était difficile pour nombre d’entre vous.</p></li>
+<li><p>La troisième séance sera consacrée à la régression linéaire (<a href="03-Regression.html" class="quarto-xref"><span>3&nbsp; Régression linéaire</span></a>). Outre ses ressemblances avec la corrélation, cette méthode est également le second type de modèle linéaire au programme cette année, après l’ANOVA. Puisque l’ANOVA et la régression linéaires sont deux méthodes de la famille des modèles linéaires, beaucoup de choses seront communes à ces méthodes (étapes de l’analyse, fonstion à utiliser dans <code>RStudio</code>, façon de vérifier les conditions d’application…).Mais attention, ce chapitre reste conséquent, et il faudra là encore que vous soyez capables de bien distinguer corrélation et régression linéaire, mais aussi ANOVA et régression linéaire.</p></li>
 <li><p>Enfin, la dernière séance sera consacrée à terminer et/ou corriger les exercices qui vous poseraient encore problème sur ces 3 chapitres. Vous pourrez également travailler sur le rapport de stratégie d’échantillonnage pour lequel vous aurez des analyses statistiques à réaliser. Plus de détails sur ce rapport dans la partie “Évaluation(s)” ci-dessous.</p></li>
 </ol>
 <!-- 4. Les troisième et quatrième semaines (11 et 12) seront consacrée aux tests d'hypothèses, mais cette fois sur des données de comptage (@sec-prop). Vous verrez ici comment comparer une proportion observée à une valeur théorique, et comment tester l'égalité de proportions observées dans plusieurs groupes. L'intervalle de confiance d'une proportion ainsi que la notion de ratio des chances seront également abordés. -->
@@ -363,7 +404,7 @@ Important
 <p>Ce livre est ligne est sous licence Creative Commons (<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr">CC BY-NC-ND 4.0</a>)</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr"><img src="images/cc_licence.png" class="img-fluid figure-img"></a></p>
+<p><a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr"><img src="images/cc_licence.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></a></p>
 </figure>
 </div>
 <p>Vous êtes autorisé à partager, copier, distribuer et communiquer ce matériel par tous moyens et sous tous formats, tant que les conditions suivantes sont respectées :</p>
@@ -466,10 +507,34 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+          // default icon
+          link.classList.add("external");
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -479,8 +544,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -492,7 +566,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -536,6 +733,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -561,6 +759,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -618,34 +842,19 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-          // default icon
-          link.classList.add("external");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./01-ANOVA.html" class="pagination-link">
+      <a href="./01-ANOVA.html" class="pagination-link" aria-label="Comparaison de moyennes : plus de 2 groupes">
         <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Comparaison de moyennes : plus de 2 groupes</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 

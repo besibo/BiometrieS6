@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -58,6 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -100,7 +101,13 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "Pas de résultats",
     "search-matching-documents-text": "documents trouvés",
@@ -109,6 +116,7 @@ div.csl-indent {
     "search-more-match-text": "correspondance de plus dans ce document",
     "search-more-matches-text": "correspondances de plus dans ce document",
     "search-clear-button-title": "Effacer",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Annuler",
     "search-submit-button-title": "Envoyer",
     "search-label": "Recherche"
@@ -119,20 +127,47 @@ div.csl-indent {
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 </head>
 
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-ANOVA.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Comparaison de moyennes : plus de 2 groupes</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-ANOVA.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Comparaison de moyennes : plus de 2 groupes</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -158,13 +193,13 @@ div.csl-indent {
   
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">TP de Biométrie<br> Semestre 6<br></a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/besibo/BiometrieS6" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./TP-de-Biométrie-br--Semestre-6-br-.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://github.com/besibo/BiometrieS6" title="Code source" class="quarto-navigation-tool px-1" aria-label="Code source"><i class="bi bi-github"></i></a>
+    <a href="./TP-de-Biométrie-br--Semestre-6-br-.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -201,8 +236,8 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04-PropTests.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Comparaison de proportions</span></span></a>
+  <a href="./05-Corrections.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Correction des exercices</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -214,7 +249,7 @@ div.csl-indent {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -254,17 +289,18 @@ div.csl-indent {
 
 
 
+
 <section id="sec-packages4" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="sec-packages4"><span class="header-section-number">1.1</span> Pré-requis</h2>
 <p>Comme pour chaque nouveau chapitre, je vous conseille de travailler dans un nouveau script que vous placerez dans votre répertoire de travail, et dans une nouvelle session de travail (Menu <code>Session &gt; Restart R</code>). Inutile en revanche de créer un nouveau <code>Rproject</code> : vos pouvez tout à fait avoir plusieurs script dans le même répertoire de travail et pour un même <code>Rproject</code>. Comme toujours, consultez <a href="https://besibo.github.io/BiometrieS3/01-R-basics.html#sec-code">le livre en ligne du semestre 3</a> si vous ne savez plus comment faire.</p>
 <p>Si vous êtes dans une nouvelle session de travail (ou que vous avez quitté puis relancé <code>RStudio</code>), vous devrez penser à recharger en mémoire les packages utiles. Dans ce chapitre, vous aurez besoin d’utiliser :</p>
 <ul>
-<li>le <code>tidyverse</code> <span class="citation" data-cites="R-tidyverse">(<a href="references.html#ref-R-tidyverse" role="doc-biblioref">Wickham 2023</a>)</span>, qui comprend notamment le package <code>readr</code> <span class="citation" data-cites="R-readr">(<a href="references.html#ref-R-readr" role="doc-biblioref">Wickham, Hester, et Bryan 2023</a>)</span>, pour importer facilement des fichiers <code>.csv</code> au format <code>tibble</code>, le package <code>dplyr</code> <span class="citation" data-cites="R-dplyr">(<a href="references.html#ref-R-dplyr" role="doc-biblioref">Wickham, François, et al. 2023</a>)</span>, pour manipuler des tableaux, et le package <code>ggplot2</code> <span class="citation" data-cites="R-ggplot2">(<a href="references.html#ref-R-ggplot2" role="doc-biblioref">Wickham, Chang, et al. 2023</a>)</span> pour les représentations graphiques.</li>
+<li>le <code>tidyverse</code> <span class="citation" data-cites="R-tidyverse">(<a href="references.html#ref-R-tidyverse" role="doc-biblioref">Wickham 2023</a>)</span>, qui comprend notamment le package <code>readr</code> <span class="citation" data-cites="R-readr">(<a href="references.html#ref-R-readr" role="doc-biblioref">Wickham, Hester, et Bryan 2024</a>)</span>, pour importer facilement des fichiers <code>.csv</code> au format <code>tibble</code>, le package <code>dplyr</code> <span class="citation" data-cites="R-dplyr">(<a href="references.html#ref-R-dplyr" role="doc-biblioref">Wickham et al. 2023</a>)</span>, pour manipuler des tableaux, et le package <code>ggplot2</code> <span class="citation" data-cites="R-ggplot2">(<a href="references.html#ref-R-ggplot2" role="doc-biblioref">Wickham et al. 2024</a>)</span> pour les représentations graphiques.</li>
 <li><code>readxl</code> <span class="citation" data-cites="R-readxl">(<a href="references.html#ref-R-readxl" role="doc-biblioref">Wickham et Bryan 2023</a>)</span>, pour importer facilement des fichiers Excel au format <code>tibble</code>.</li>
 <li><code>skimr</code> <span class="citation" data-cites="R-skimr">(<a href="references.html#ref-R-skimr" role="doc-biblioref">Waring et al. 2022</a>)</span>, qui permet de calculer des résumés de données très informatifs.</li>
 <li><code>car</code> <span class="citation" data-cites="R-car">(<a href="references.html#ref-R-car" role="doc-biblioref">Fox, Weisberg, et Price 2023</a>)</span>, qui permet d’effectuer le test de comparaison des variances de Levene.</li>
 <li><code>broom</code> <span class="citation" data-cites="R-broom">(<a href="references.html#ref-R-broom" role="doc-biblioref">Robinson, Hayes, et Couch 2023</a>)</span>, qui fait partie du <code>tidyverse</code> mais qu’il faut charger explicitement. La fonction <code>tidy()</code> de ce package nous permettra de “ranger” correctement les résultats de tests dans un <code>tibble</code>.</li>
-<li><code>DescTools</code> <span class="citation" data-cites="R-DescTools">(<a href="references.html#ref-R-DescTools" role="doc-biblioref">Signorell 2023</a>)</span>, afin de réaliser un test spécifique de comparaisons multiples. N’oubliez pas de l’installer si nécessaire, avant de le charger en mémoire.</li>
+<li><code>DescTools</code> <span class="citation" data-cites="R-DescTools">(<a href="references.html#ref-R-DescTools" role="doc-biblioref">Signorell 2024</a>)</span>, afin de réaliser un test spécifique de comparaisons multiples. N’oubliez pas de l’installer si nécessaire, avant de le charger en mémoire.</li>
 <li>le package <code>palmerpenguins</code> <span class="citation" data-cites="R-palmerpenguins">(<a href="references.html#ref-R-palmerpenguins" role="doc-biblioref">Horst, Hill, et Gorman 2022</a>)</span> pour accéder au jeu de données <code>penguins</code> que nous utiliserons pour les exercices d’application.</li>
 </ul>
 <div class="cell">
@@ -456,7 +492,7 @@ Group variables            treatment
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> shift, <span class="at">fill =</span> treatment)) <span class="sc">+</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">notch =</span> <span class="cn">TRUE</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>, </span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">outlier.colour =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">height =</span> <span class="dv">0</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"traitement"</span>, <span class="at">y =</span> <span class="st">"Décalage de phase (sans unité)"</span>) <span class="sc">+</span></span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Accent"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -468,25 +504,34 @@ Notch went outside hinges
 ℹ Do you want `notch = FALSE`?</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<p>Puisqu’il y a peu de données, les intervalles de confiance à 95% sont très larges. Ils dépassent d’ailleurs presque systématiquement les quartiles, ce qui explique l’apparence bizarre des boîtes à moustaches et les messages d’avertissement affichés lors de la création du graphique. Il vaudait donc mieux représenter cette figure sans ces intervalles de confiance. Toutefois, avant de les retirer, on peut constater ici que les IC 95% se chevauchent complètement pour les séries <code>control</code> et <code>knee</code>. En revanche, il n’y a aucun chevauchement de l’IC 95% du groupe <code>eyes</code> avec les 2 autres groupes. Ces réslutats sont très légèrement différents de ceux obtenus plus haut, car on examine ici les intervalles de confiance à 95% des médianes, alors qu’on regardait les intervalles de confiance à 95% des moyennes dans la section précédente. Les conclusions sont toutefois les mêmes : on s’attend donc à trouver une différence de moyenne significative entre le groupe <code>eyes</code> d’une part, et les groupes <code>control</code> et <code>knee</code> d’autre part, mais pas de différence de moyenne entre les groupes <code>control</code> et <code>knee</code>.</p>
+</div>
+<p>Si vous ne savez plus à quoi correspondent les arguments <code>width</code> et <code>height</code> de <code>geom_jitter()</code>, prenez le temps de relire les explications de la section 3.5.2 du <a href="https://besibo.github.io/BiometrieS3/03-visualization.html#fig-jitter-1">livre en ligne de Biométrie 3</a> consacrées à cette question.</p>
+<p>Puisqu’il y a peu de données, les intervalles de confiance à 95% sont très larges. Ils dépassent d’ailleurs presque systématiquement les quartiles, ce qui explique l’apparence bizarre des boîtes à moustaches et les messages d’avertissement affichés lors de la création du graphique. Il vaudrait donc mieux représenter cette figure sans ces intervalles de confiance. Toutefois, avant de les retirer, on peut constater ici que les IC 95% se chevauchent complètement pour les séries <code>control</code> et <code>knee</code>. En revanche, il n’y a aucun chevauchement de l’IC 95% du groupe <code>eyes</code> avec les 2 autres groupes. Ces résultats sont très légèrement différents de ceux obtenus plus haut, car on examine ici les intervalles de confiance à 95% des médianes, alors qu’on regardait les intervalles de confiance à 95% des moyennes dans la section précédente. Les conclusions sont toutefois les mêmes : on s’attend donc à trouver une différence de moyenne significative entre le groupe <code>eyes</code> d’une part, et les groupes <code>control</code> et <code>knee</code> d’autre part, mais pas de différence de moyenne entre les groupes <code>control</code> et <code>knee</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">|&gt;</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> shift, <span class="at">fill =</span> treatment)) <span class="sc">+</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>, </span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">outlier.colour =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">height =</span> <span class="dv">0</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"traitement"</span>, <span class="at">y =</span> <span class="st">"Décalage de phase (sans unité)"</span>) <span class="sc">+</span></span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Accent"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>On constate ici visuellement que les 3 séries ont une étendue à peu près similaire, et que le groupe <code>eyes</code> semble se distinguer des 2 autres par des valeurs plus faibles. Enfin, les boîtes contenant 50% des valeurs centrales (donc l’étendue des valeurs entre les premiers et troisièmes quartiles) recouvrent le 0 pour les 2 groupes <code>control</code> et <code>knee</code>, mais par pour <code>eyes</code>.</p>
 <p>L’examen d’un graphique de densité facetté donne les mêmes informations :</p>
-<div class="cell" data-fig.asp="1">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>Light <span class="sc">|&gt;</span> </span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> shift, <span class="at">fill =</span> treatment)) <span class="sc">+</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
@@ -495,7 +540,11 @@ Notch went outside hinges
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Accent"</span>) <span class="sc">+</span></span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Décalage de phase (sans unité)"</span>, <span class="at">y =</span> <span class="st">"Densité"</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Un package utile lorsque l’on dispose d’un grand nombre de groupes que l’on souhaite comparer à l’aide de graphiques de densité est le package <code>ggridges</code> :</p>
@@ -510,7 +559,11 @@ Notch went outside hinges
 <pre><code>Picking joint bandwidth of 0.366</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -593,25 +646,32 @@ Important
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Ici, les résidus sont considérés comme homogènes car nous avons à peu près autant de résidus positifs que négatifs et que la ligne rouge est très proche du 0. L’étalement (vertical) des résidus est à peu près le même de la gauche à la droite du graphique. On pourrait donc faire entrer les résidus dans une boite rectangulaire horizontale centrée sur le 0 et ayant la même largeur d’un bout à l’autre du graphique.</p>
 <p>Ci-dessous, j’affiche quelques exemples de situations où les résidus ne sont pas homogènes afin que vous puissiez voir à quoi ressemblent les graphiques des résidus en fonction des valeurs ajustées dans ce type de situation :</p>
-<div class="cell quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div>
+
+</div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><img src="01-ANOVA_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><img src="01-ANOVA_files/figure-html/unnamed-chunk-18-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><img src="01-ANOVA_files/figure-html/unnamed-chunk-18-3.png" class="img-fluid" width="672"></p>
 </div>
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><img src="01-ANOVA_files/figure-html/unnamed-chunk-18-4.png" class="img-fluid" width="672"></p>
 </div>
 </div>
@@ -621,7 +681,11 @@ Important
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">which =</span> <span class="dv">3</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Sur ce graphique, ce qui compte principalement, c’est la droite en rouge. Elle est ici presque horizontale, ce qui montre que les résidus de tous les groupes (un groupe à gauche et 2 à droite) ont à peu près même moyenne.</p>
@@ -648,7 +712,11 @@ group  2  0.1586 0.8545
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res, <span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Sur un graphique quantile-quantile comme celui-là, on considère que les observations sont distribuées normalement si les points sont bien alignés sur la droite. Ici, la plupart des points sont très proches de la droite, ce qui laisse penser que les résidus suivent bien la loi Normale. Mais il est souvent difficile, surtout pour les néophytes, de savoir à partir de quel écart entre les points et la droite il faut considérer que les résidus n’ont pas une distribution Normale.</p>
@@ -812,7 +880,11 @@ eyes-knee    -1.21571429 -2.1716263 -0.2598022 0.0116776</code></pre>
 <span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
 <span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="01-ANOVA_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Notez ici l’utilisation de <code>geom_linerange</code>, pour afficher les intervalles de confiance à 95% des différences de moyennes. Il s’agit d’une alternative à <code>geom_errorbar()</code> dont nous avons déjà parlé <a href="https://besibo.github.io/BiometrieS4/03-graphiques.html#visualiser-lincertitude-les-barres-derreur">dans ce chapitre</a> du livre en ligne du semestre 4. La fonction <code>geom_hline()</code> permet de faire apparaître des lignes horizontales sur un graphique. Ici, avec <code>y = 0</code>, cette fonction fait apparaître un axe horizontal (axe des abscisses). Enfin, la fonction <code>coord_flip()</code> permet d’inverser les axes du graphique : l’axe des <code>x</code> bascule à la verticale, et l’axe des <code>y</code> à l’horizontale. Cela permet d’obtenir un graphique dont l’apparence est typique de ce genre de graphique produit avec les résultats du test de Tukey HSD.</p>
@@ -845,7 +917,7 @@ Paramétrique ou non ?
 <div class="callout-body-container callout-body">
 <p>Pour comparer la moyenne de plus de 2 groupes :</p>
 <ul>
-<li>lorsque les conditions permettant de réaliser un test paramétrique sont réunies (voir <a href="#sec-caanova"><span>Section&nbsp;1.6.2</span></a>), on effectuera une <strong>ANOVA</strong>, qui n’est qu’une extension du test de <strong>Student</strong>. Si (et seulement si) on en rejette l’hypothèse nulle, on fera ensuite un test <em>post-hoc</em> <strong>paramétrique</strong> : le test de <strong>comparaisons multiples de Student</strong> et/ou le test de <strong>Tukey HSD</strong>.</li>
+<li>lorsque les conditions permettant de réaliser un test paramétrique sont réunies (voir <a href="#sec-caanova" class="quarto-xref"><span>Section 1.6.2</span></a>), on effectuera une <strong>ANOVA</strong>, qui n’est qu’une extension du test de <strong>Student</strong>. Si (et seulement si) on en rejette l’hypothèse nulle, on fera ensuite un test <em>post-hoc</em> <strong>paramétrique</strong> : le test de <strong>comparaisons multiples de Student</strong> et/ou le test de <strong>Tukey HSD</strong>.</li>
 <li>lorsque les conditions permettant de réaliser un test paramétrique ne sont pas réunies, on effectuera un test de <strong>Kruskal-Wallis</strong>, qui est une extension du test de <strong>Wilcoxon</strong>. Si (et seulement si) on en rejette l’hypothèse nulle, on fera ensuite un test <em>post-hoc</em> <strong>non paramétrique</strong> : le test de <strong>comparaisons multiples de Wilcoxon</strong> et/ou le test de <strong>Dunn</strong>.</li>
 </ul>
 </div>
@@ -983,42 +1055,42 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <p>Avec le jeu de données <code>penguins</code> du package <code>palmerpenguins</code>, comparez la longueur des nageoires des femelles des 3 espèces de manchots. Les femelles des 3 espèces ont-elles toutes des nageoires de longueur différentes, et quelle est la magnitude de ces éventuelles différences ?</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-Campbell1998" class="csl-entry" role="listitem">
 Campbell, Scott S., et Patricia J. Murphy. 1998. <span>«&nbsp;Extraocular Circadian Phototransduction in Humans&nbsp;»</span>. <em>Science</em> 279 (5349): 396‑99. <a href="https://doi.org/10.1126/science.279.5349.396">https://doi.org/10.1126/science.279.5349.396</a>.
 </div>
 <div id="ref-R-car" class="csl-entry" role="listitem">
-Fox, John, Sanford Weisberg, et Brad Price. 2023. <em>car: Companion to Applied Regression</em>. <a href="https://CRAN.R-project.org/package=car">https://CRAN.R-project.org/package=car</a>.
+Fox, John, Sanford Weisberg, et Brad Price. 2023. <em>car: Companion to Applied Regression</em>. <a href="https://r-forge.r-project.org/projects/car/">https://r-forge.r-project.org/projects/car/</a>.
 </div>
 <div id="ref-R-palmerpenguins" class="csl-entry" role="listitem">
-Horst, Allison, Alison Hill, et Kristen Gorman. 2022. <em>palmerpenguins: Palmer Archipelago (Antarctica) Penguin Data</em>. <a href="https://CRAN.R-project.org/package=palmerpenguins">https://CRAN.R-project.org/package=palmerpenguins</a>.
+Horst, Allison, Alison Hill, et Kristen Gorman. 2022. <em>palmerpenguins: Palmer Archipelago (Antarctica) Penguin Data</em>. <a href="https://allisonhorst.github.io/palmerpenguins/">https://allisonhorst.github.io/palmerpenguins/</a>.
 </div>
 <div id="ref-Molofsky2005" class="csl-entry" role="listitem">
 Molofsky, Jane, et Jean-Baptiste Ferdy. 2005. <span>«&nbsp;Extinction dynamics in experimental metapopulations&nbsp;»</span>. <em>Proceedings of the National Academy of Sciences</em> 102 (10): 3726‑31. <a href="https://doi.org/10.1073/pnas.0404576102">https://doi.org/10.1073/pnas.0404576102</a>.
 </div>
 <div id="ref-R-broom" class="csl-entry" role="listitem">
-Robinson, David, Alex Hayes, et Simon Couch. 2023. <em>broom: Convert Statistical Objects into Tidy Tibbles</em>. <a href="https://CRAN.R-project.org/package=broom">https://CRAN.R-project.org/package=broom</a>.
+Robinson, David, Alex Hayes, et Simon Couch. 2023. <em>broom: Convert Statistical Objects into Tidy Tibbles</em>. <a href="https://broom.tidymodels.org/">https://broom.tidymodels.org/</a>.
 </div>
 <div id="ref-R-DescTools" class="csl-entry" role="listitem">
-Signorell, Andri. 2023. <em>DescTools: Tools for Descriptive Statistics</em>. <a href="https://CRAN.R-project.org/package=DescTools">https://CRAN.R-project.org/package=DescTools</a>.
+Signorell, Andri. 2024. <em>DescTools: Tools for Descriptive Statistics</em>. <a href="https://andrisignorell.github.io/DescTools/">https://andrisignorell.github.io/DescTools/</a>.
 </div>
 <div id="ref-R-skimr" class="csl-entry" role="listitem">
-Waring, Elin, Michael Quinn, Amelia McNamara, Eduardo Arino de la Rubia, Hao Zhu, et Shannon Ellis. 2022. <em>skimr: Compact and Flexible Summaries of Data</em>. <a href="https://CRAN.R-project.org/package=skimr">https://CRAN.R-project.org/package=skimr</a>.
+Waring, Elin, Michael Quinn, Amelia McNamara, Eduardo Arino de la Rubia, Hao Zhu, et Shannon Ellis. 2022. <em>skimr: Compact and Flexible Summaries of Data</em>. <a href="https://docs.ropensci.org/skimr/">https://docs.ropensci.org/skimr/</a>.
 </div>
 <div id="ref-R-tidyverse" class="csl-entry" role="listitem">
-Wickham, Hadley. 2023. <em>tidyverse: Easily Install and Load the Tidyverse</em>. <a href="https://CRAN.R-project.org/package=tidyverse">https://CRAN.R-project.org/package=tidyverse</a>.
+Wickham, Hadley. 2023. <em>tidyverse: Easily Install and Load the Tidyverse</em>. <a href="https://tidyverse.tidyverse.org">https://tidyverse.tidyverse.org</a>.
 </div>
 <div id="ref-R-readxl" class="csl-entry" role="listitem">
-Wickham, Hadley, et Jennifer Bryan. 2023. <em>readxl: Read Excel Files</em>. <a href="https://CRAN.R-project.org/package=readxl">https://CRAN.R-project.org/package=readxl</a>.
+Wickham, Hadley, et Jennifer Bryan. 2023. <em>readxl: Read Excel Files</em>. <a href="https://readxl.tidyverse.org">https://readxl.tidyverse.org</a>.
 </div>
 <div id="ref-R-ggplot2" class="csl-entry" role="listitem">
-Wickham, Hadley, Winston Chang, Lionel Henry, Thomas Lin Pedersen, Kohske Takahashi, Claus Wilke, Kara Woo, Hiroaki Yutani, et Dewey Dunnington. 2023. <em>ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics</em>. <a href="https://CRAN.R-project.org/package=ggplot2">https://CRAN.R-project.org/package=ggplot2</a>.
+Wickham, Hadley, Winston Chang, Lionel Henry, Thomas Lin Pedersen, Kohske Takahashi, Claus Wilke, Kara Woo, Hiroaki Yutani, Dewey Dunnington, et Teun van den Brand. 2024. <em>ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics</em>. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
 </div>
 <div id="ref-R-dplyr" class="csl-entry" role="listitem">
-Wickham, Hadley, Romain François, Lionel Henry, Kirill Müller, et Davis Vaughan. 2023. <em>dplyr: A Grammar of Data Manipulation</em>. <a href="https://CRAN.R-project.org/package=dplyr">https://CRAN.R-project.org/package=dplyr</a>.
+Wickham, Hadley, Romain François, Lionel Henry, Kirill Müller, et Davis Vaughan. 2023. <em>dplyr: A Grammar of Data Manipulation</em>. <a href="https://dplyr.tidyverse.org">https://dplyr.tidyverse.org</a>.
 </div>
 <div id="ref-R-readr" class="csl-entry" role="listitem">
-Wickham, Hadley, Jim Hester, et Jennifer Bryan. 2023. <em>readr: Read Rectangular Text Data</em>. <a href="https://CRAN.R-project.org/package=readr">https://CRAN.R-project.org/package=readr</a>.
+Wickham, Hadley, Jim Hester, et Jennifer Bryan. 2024. <em>readr: Read Rectangular Text Data</em>. <a href="https://readr.tidyverse.org">https://readr.tidyverse.org</a>.
 </div>
 <div id="ref-Wright2002" class="csl-entry" role="listitem">
 Wright, Kenneth P., et Charles A. Czeisler. 2002. <span>«&nbsp;Absence of Circadian Phase Resetting in Response to Bright Light Behind the Knees&nbsp;»</span>. <em>Science</em> 297 (5581): 571‑71. <a href="https://doi.org/10.1126/science.1071697">https://doi.org/10.1126/science.1071697</a>.
@@ -1107,10 +1179,34 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+          // default icon
+          link.classList.add("external");
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -1120,8 +1216,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -1133,7 +1238,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -1177,6 +1405,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1202,6 +1431,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1259,37 +1514,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
   }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-          // target, if specified
-          link.setAttribute("target", "_blank");
-          // default icon
-          link.classList.add("external");
-      }
-    }
 });
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link">
+      <a href="./index.html" class="pagination-link" aria-label="Introduction">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Introduction</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./02-Correlation.html" class="pagination-link">
+      <a href="./02-Correlation.html" class="pagination-link" aria-label="Corrélation">
         <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Corrélation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 
