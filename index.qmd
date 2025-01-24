@@ -88,12 +88,16 @@ Sans une bonne maîtrise de ces outils et notions, vous aurez du mal à suivre c
 
 Au total, 4 séances de TP d'1h30 suivies de 4 séances de TEA d'1h30 sont prévues entre le 6 février et le 15 mars 2024 :
 
-- Séance 1 : mardi 6 et mercredi 7 février (1 séance de TP d'1h30 et 1 séance de TEA d'1h30)
-- Séance 2 : mardi 27 et mercredi 28 février (1 séance de TP d'1h30) et lundi 4 mars (1 séance de TEA d'1h30)
-- Séance 3 : mardi 5 et mercredi 6 mars (1 séance de TP d'1h30) et lundi 11 mars (1 séance de TEA d'1h30)
-- Séance 4 : mardi 12 et mercredi 13 mars (1 séance de TP d'1h30) et vendredi 15 mars (1 séance de TEA d'1h30)
+- TP 1 : mardi 28 et vendredi 31 janvier
+- TEA 1 : lundi 3 février
+- TP 2 : lundi 3, mardi 4 et vendredi 7 mars
+- TP 3 : mardi 11 et vendredi 14 mars
+- TEA 2 : lundi 17 mars
+- TP 4 : vendredi 21 et lundi 24 mars
+- TEA 3 : samedi 22 mars
+- TEA 4 : samedi 29 mars
 
-**Tous les TP ont lieu en salle MSI 217 ou en Sc7 du PCM. Tous les TEA sont en distantiel synchrone** (voir détails plus bas).
+**Presque tous les TP ont lieu en salle MSI 217 ou en Sc3 et Sc4 du PCM. Tous les TEA sont en distantiel synchrone** (voir détails plus bas).
 
 Je vous indique tout ça pour vous permettre de vous déplacer aux séances qui vous conviennent le mieux. Si vous êtes disponibles pendant le TP d'un autre groupe mais que vous avez des questions à poser, n'hésitez pas à venir en salle : j'y serai *systématiquement*.
 
